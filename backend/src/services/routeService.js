@@ -82,7 +82,7 @@ export async function deleteRoute(routeId, userId) {
 }
 
 /**
- * Add or update a rating for a route.
+ * Create a new rating for a route.
  */
 export async function rateRoute(userId, routeId, body) {
   const { rating, comment } = body;
@@ -95,24 +95,60 @@ export async function rateRoute(userId, routeId, body) {
   }
 
   // Check if user already rated this route
+  const alreadyRated = route.ratings.some(
+    (r) => r.userId.toString() === userId.toString()
+  );
+
+  if (alreadyRated) {
+    const err = new Error("You have already rated this route. Use PUT to update.");
+    err.statusCode = 409;
+    throw err;
+  }
+
+  route.ratings.push({
+    userId,
+    rating,
+    comment: comment || "",
+    createdAt: new Date(),
+  });
+
+  // Recalculate average rating
+  const totalRating = route.ratings.reduce((sum, r) => sum + r.rating, 0);
+  route.averageRating = parseFloat((totalRating / route.ratings.length).toFixed(2));
+  route.ratingCount = route.ratings.length;
+
+  await route.save();
+  await route.populate("ratings.userId", "name");
+
+  return route;
+}
+
+/**
+ * Update an existing rating for a route.
+ */
+export async function updateRating(userId, routeId, body) {
+  const { rating, comment } = body;
+
+  const route = await Route.findById(routeId);
+  if (!route) {
+    const err = new Error("Route not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
   const existingRatingIndex = route.ratings.findIndex(
     (r) => r.userId.toString() === userId.toString()
   );
 
-  if (existingRatingIndex !== -1) {
-    // Update existing rating
-    route.ratings[existingRatingIndex].rating = rating;
-    route.ratings[existingRatingIndex].comment = comment || "";
-    route.ratings[existingRatingIndex].createdAt = new Date();
-  } else {
-    // Add new rating
-    route.ratings.push({
-      userId,
-      rating,
-      comment: comment || "",
-      createdAt: new Date(),
-    });
+  if (existingRatingIndex === -1) {
+    const err = new Error("You have not rated this route yet");
+    err.statusCode = 404;
+    throw err;
   }
+
+  route.ratings[existingRatingIndex].rating = rating;
+  route.ratings[existingRatingIndex].comment = comment || "";
+  route.ratings[existingRatingIndex].createdAt = new Date();
 
   // Recalculate average rating
   const totalRating = route.ratings.reduce((sum, r) => sum + r.rating, 0);

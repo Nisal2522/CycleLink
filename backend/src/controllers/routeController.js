@@ -31,10 +31,18 @@ export async function deleteRoute(req, res) {
 }
 
 /**
- * Rate a route.
+ * Rate a route (create new rating).
  */
 export async function rateRoute(req, res) {
   const data = await routeService.rateRoute(req.user._id, req.params.id, req.body);
+  res.status(201).json(data);
+}
+
+/**
+ * Update an existing rating.
+ */
+export async function updateRating(req, res) {
+  const data = await routeService.updateRating(req.user._id, req.params.id, req.body);
   res.json(data);
 }
 

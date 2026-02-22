@@ -10,6 +10,7 @@ import {
   updateRoute,
   deleteRoute,
   rateRoute,
+  updateRating,
   getRouteRatings,
   deleteRating,
 } from "../controllers/routeController.js";
@@ -98,7 +99,8 @@ router.get("/my-routes", protect, asyncHandler(getMyRoutes));
  * @swagger
  * /routes/{id}/rate:
  *   post:
- *     summary: Rate a route
+ *     summary: Create a new rating for a route
+ *     description: Add a rating to a route. Fails with 409 if the user has already rated this route.
  *     tags: [Routes]
  *     security:
  *       - bearerAuth: []
@@ -127,16 +129,63 @@ router.get("/my-routes", protect, asyncHandler(getMyRoutes));
  *                 type: string
  *                 description: Optional comment for the rating
  *     responses:
- *       200:
- *         description: Route rated successfully
+ *       201:
+ *         description: Rating created successfully
  *       400:
  *         description: Validation error
  *       401:
  *         description: Unauthorized
  *       404:
  *         description: Route not found
+ *       409:
+ *         description: User has already rated this route
  */
 router.post("/:id/rate", protect, validate(rateRouteSchema), asyncHandler(rateRoute));
+
+/**
+ * @swagger
+ * /routes/{id}/rate:
+ *   put:
+ *     summary: Update an existing rating for a route
+ *     description: Update the authenticated user's existing rating. Fails with 404 if the user has not rated this route yet.
+ *     tags: [Routes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Route ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rating
+ *             properties:
+ *               rating:
+ *                 type: number
+ *                 minimum: 1
+ *                 maximum: 5
+ *                 description: Updated rating value (1-5)
+ *               comment:
+ *                 type: string
+ *                 description: Updated comment for the rating
+ *     responses:
+ *       200:
+ *         description: Rating updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Route not found or user has not rated this route
+ */
+router.put("/:id/rate", protect, validate(rateRouteSchema), asyncHandler(updateRating));
 
 /**
  * @swagger
