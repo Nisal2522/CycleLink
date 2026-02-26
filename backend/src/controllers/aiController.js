@@ -1,11 +1,3 @@
-/**
- * controllers/aiController.js
- * --------------------------------------------------
- * Gemini AI chat for Cycling Community assistant.
- * POST /api/ai/chat       — non-streaming (legacy).
- * POST /api/ai/chat/stream — streaming (SSE), faster model + maxOutputTokens.
- */
-
 import asyncHandler from "express-async-handler";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 

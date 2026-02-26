@@ -1,6 +1,3 @@
-/**
- * tests/helpers/testApp.js — Integration test Express app builder.
- */
 import express from "express";
 
 /**

@@ -1,6 +1,3 @@
-/**
- * src/validatons/authValidation.js — Joi schemas for auth (Requirement v).
- */
 import Joi from "joi";
 import { ROLES } from "../constants.js";
 

@@ -1,9 +1,3 @@
-/**
- * controllers/adminController.js
- * --------------------------------------------------
- * Admin HTTP layer only. All data access via adminService or payoutService (Controller → Service → Model).
- */
-
 import * as adminService from "../services/adminService.js";
 import * as payoutService from "../services/payoutService.js";
 import { buildPayoutPaymentParams } from "../utils/payhereHelper.js";

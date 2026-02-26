@@ -1,6 +1,3 @@
-/**
- * src/config/swagger.js — Swagger/OpenAPI spec configuration.
- */
 import swaggerJsdoc from "swagger-jsdoc";
 
 const swaggerSpec = swaggerJsdoc({

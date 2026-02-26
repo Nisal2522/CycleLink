@@ -1,9 +1,3 @@
-/**
- * controllers/routeController.js
- * --------------------------------------------------
- * Route HTTP layer only. All data access via routeService (Controller → Service → Model).
- */
-
 import * as routeService from "../services/routeService.js";
 
 export async function createRoute(req, res) {

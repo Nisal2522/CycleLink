@@ -1,10 +1,3 @@
-/**
- * src/middleware/auth.js — JWT authentication (Clean Architecture: token verification only here).
- *
- * - Reads Authorization header (req.get('Authorization') or req.headers.authorization).
- * - Verifies JWT with JWT_SECRET from .env (must match the secret used in generateToken).
- * - User lookup is delegated to authService.getUserById (Single Responsibility).
- */
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import * as authService from "../services/authService.js";

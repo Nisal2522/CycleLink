@@ -1,15 +1,3 @@
-/**
- * routes/rewardRoutes.js
- * --------------------------------------------------
- * Partner reward management routes.
- *
- * POST   /api/rewards               → createReward (partner only)
- * GET    /api/rewards/partner/:id   → getPartnerRewards (partner only)
- * PATCH  /api/rewards/:id           → updateReward (partner only)
- * DELETE /api/rewards/:id           → deleteReward (partner only)
- * --------------------------------------------------
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

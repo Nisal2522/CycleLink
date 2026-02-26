@@ -1,9 +1,3 @@
-/**
- * src/services/cyclistService.js
- * --------------------------------------------------
- * Cyclist dashboard & stats. All User, Reward, Ride model access here (Controller → Service → Model).
- */
-
 import User from "../models/User.js";
 import Reward from "../models/Reward.js";
 import Ride from "../models/Ride.js";

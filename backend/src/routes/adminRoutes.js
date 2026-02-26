@@ -1,9 +1,3 @@
-/**
- * routes/adminRoutes.js
- * --------------------------------------------------
- * Super Admin API. All routes: protect + adminOnly. JWT required.
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

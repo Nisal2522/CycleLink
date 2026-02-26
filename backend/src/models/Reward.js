@@ -1,6 +1,3 @@
-/**
- * src/models/Reward.js — Mongoose schema for partner reward offers (Data Layer).
- */
 import mongoose from "mongoose";
 
 const rewardSchema = new mongoose.Schema(

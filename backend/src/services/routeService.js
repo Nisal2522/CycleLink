@@ -1,9 +1,3 @@
-/**
- * src/services/routeService.js
- * --------------------------------------------------
- * Route business logic. All Route model access here (Controller → Service → Model).
- */
-
 import mongoose from "mongoose";
 import Route from "../models/Route.js";
 import { ROUTE_STATUS } from "../constants.js";

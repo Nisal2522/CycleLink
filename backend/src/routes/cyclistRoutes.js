@@ -1,15 +1,3 @@
-/**
- * routes/cyclistRoutes.js
- * --------------------------------------------------
- * Cyclist dashboard API routes (MVC: Routes layer).
- *
- * GET  /api/cyclist/stats           → cyclistController.getStats (cyclist only)
- * POST /api/cyclist/update-distance → cyclistController.updateDistance (cyclist only)
- * GET  /api/cyclist/leaderboard     → cyclistController.getLeaderboard (protected)
- * GET  /api/cyclist/partners        → getPartnerShops (public)
- * --------------------------------------------------
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

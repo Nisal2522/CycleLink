@@ -1,7 +1,3 @@
-/**
- * src/utils/payhereHelper.js — PayHere notify_url verification + payment init (Requirement iv).
- * Reads env at runtime so values are set after dotenv loads (fixes 503 when vars in .env).
- */
 import crypto from "crypto";
 
 function getEnv(name, fallback = "") {

@@ -1,6 +1,3 @@
-/**
- * src/models/Message.js — Single message in a chat (Data Layer).
- */
 import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(

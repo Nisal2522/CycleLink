@@ -1,9 +1,3 @@
-/**
- * controllers/chatController.js
- * --------------------------------------------------
- * Chat HTTP layer only. All data access via chatService (Controller → Service → Model).
- */
-
 import asyncHandler from "express-async-handler";
 import * as chatService from "../services/chatService.js";
 

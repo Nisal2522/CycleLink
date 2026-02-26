@@ -1,12 +1,3 @@
-/**
- * routes/tokenRoutes.js
- * --------------------------------------------------
- * Token-related routes (currently partner redemption).
- *
- * PATCH /api/tokens/redeem → redeemTokens
- * --------------------------------------------------
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

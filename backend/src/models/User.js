@@ -1,20 +1,3 @@
-/**
- * models/User.js
- * --------------------------------------------------
- * Mongoose schema and model for a CycleLink user.
- *
- * Fields:
- *   Auth    — name, email, password, role
- *   Cyclist — tokens, totalDistance, co2Saved, totalRides, safetyScore
- *   Partner — shopName, partnerTotalRedemptions
- *
- * Methods:
- *   - matchPassword(enteredPassword)
- *
- * Pre-save hook hashes the password automatically.
- * --------------------------------------------------
- */
-
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { ROLES } from "../constants.js";

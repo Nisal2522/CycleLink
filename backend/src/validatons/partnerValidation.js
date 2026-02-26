@@ -1,6 +1,3 @@
-/**
- * src/validations/partnerValidation.js — Joi schemas for partner (Requirement v).
- */
 import Joi from "joi";
 
 export const updatePartnerProfileSchema = Joi.object({

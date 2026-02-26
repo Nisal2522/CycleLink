@@ -1,9 +1,3 @@
-/**
- * src/services/hazardService.js
- * --------------------------------------------------
- * Hazard business logic. All Hazard model access here (Controller → Service → Model).
- */
-
 import Hazard from "../models/Hazard.js";
 import { HAZARD_TYPES } from "../constants.js";
 import { LIMITS } from "../constants.js";

@@ -1,9 +1,3 @@
-/**
- * src/middleware/role.js — Role-Based Access Control: Partner vs Cyclist (Requirement iv & v).
- *
- * Provides flexible role checking middleware for route protection.
- * Supports single role checks and multi-role authorization.
- */
 import asyncHandler from "express-async-handler";
 import { ROLES } from "../constants.js";
 

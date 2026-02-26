@@ -1,6 +1,3 @@
-/**
- * src/models/Redemption.js — Token redemption log at partner (Data Layer).
- */
 import mongoose from "mongoose";
 
 const redemptionSchema = new mongoose.Schema(

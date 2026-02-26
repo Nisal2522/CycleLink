@@ -1,6 +1,3 @@
-/**
- * src/controllers/transactionController.js — Transactions/Scanner: request data, services, responseFormatter only.
- */
 import asyncHandler from "express-async-handler";
 import { success } from "../utils/responseFormatter.js";
 import * as transactionService from "../services/transactionService.js";

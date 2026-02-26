@@ -1,6 +1,3 @@
-/**
- * src/controllers/authController.js — Extract request data, call services, return HTTP via responseFormatter only.
- */
 import asyncHandler from "express-async-handler";
 import { success } from "../utils/responseFormatter.js";
 import * as authService from "../services/authService.js";

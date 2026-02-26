@@ -1,6 +1,3 @@
-/**
- * src/app.js — Express app: middleware, routes, error handling.
- */
 import express from "express";
 import cors from "cors";
 import asyncHandler from "express-async-handler";

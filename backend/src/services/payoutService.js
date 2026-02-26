@@ -1,9 +1,3 @@
-/**
- * src/services/payoutService.js — Admin payout & payout-request business logic (Clean Architecture).
- * Requirement ii (Reporting), iv & v (Payout Requests Reject, Manual Adjustments).
- * Controllers only call this layer and format HTTP responses.
- */
-
 import User from "../models/User.js";
 import Payout, { TOKEN_VALUE } from "../models/Payout.js";
 import PayoutRequest from "../models/PayoutRequest.js";

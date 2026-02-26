@@ -1,6 +1,3 @@
-/**
- * src/validatons/payoutValidation.js — Joi schemas for admin payout operations (Requirement v).
- */
 import Joi from "joi";
 
 /** Body for rejecting a payout request: rejectionReason required */

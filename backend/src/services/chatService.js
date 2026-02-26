@@ -1,9 +1,3 @@
-/**
- * src/services/chatService.js
- * --------------------------------------------------
- * Chat business logic. All Chat, Message, User model access here (Controller → Service → Model).
- */
-
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
 import User from "../models/User.js";

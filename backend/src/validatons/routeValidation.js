@@ -1,6 +1,3 @@
-/**
- * src/validatons/routeValidation.js — Joi schemas for route create/update.
- */
 import Joi from "joi";
 
 const pathPointSchema = Joi.object({

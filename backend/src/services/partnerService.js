@@ -1,7 +1,3 @@
-/**
- * src/services/partnerService.js — Partner/Shop business logic (Requirement iii).
- * DB access via Mongoose models directly (Controller → Service → Model pattern).
- */
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/User.js";
 import Payout from "../models/Payout.js";

@@ -1,8 +1,3 @@
-/**
- * controllers/paymentController.js
- * --------------------------------------------------
- * PayHere notify_url only. Stripe removed.
- */
 import { verifyNotifyPayload } from "../utils/payhereHelper.js";
 
 /**

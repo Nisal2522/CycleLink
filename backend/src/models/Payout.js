@@ -1,22 +1,3 @@
-/**
- * models/Payout.js
- * --------------------------------------------------
- * Monthly payout record per partner for admin processing.
- *
- * TOKEN_VALUE = 10 LKR per token.
- *
- * Fields:
- *   - partnerId      : ObjectId → User (partner)
- *   - month         : String "YYYY-MM"
- *   - totalTokens   : number of tokens redeemed in that month
- *   - totalAmount   : LKR (totalTokens * TOKEN_VALUE)
- *   - status          : 'Pending' | 'Paid'
- *   - transactionId   : when paid
- *   - adjustmentAmount: manual adjustment (LKR) before processing
- *   - adjustmentNote  : admin note for the adjustment
- * --------------------------------------------------
- */
-
 import mongoose from "mongoose";
 
 export const TOKEN_VALUE = 10; // LKR per token

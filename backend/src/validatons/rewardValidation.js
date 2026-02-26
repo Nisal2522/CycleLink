@@ -1,6 +1,3 @@
-/**
- * src/validations/rewardValidation.js — Joi schemas for rewards (Requirement v).
- */
 import Joi from "joi";
 
 export const createRewardSchema = Joi.object({

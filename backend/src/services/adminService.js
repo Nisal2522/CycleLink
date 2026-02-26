@@ -1,9 +1,3 @@
-/**
- * src/services/adminService.js
- * --------------------------------------------------
- * Admin business logic. All User, Route, Hazard, Payment data access here (Controller → Service → Model).
- */
-
 import User from "../models/User.js";
 import Route from "../models/Route.js";
 import Hazard from "../models/Hazard.js";

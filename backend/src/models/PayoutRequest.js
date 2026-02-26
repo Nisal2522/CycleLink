@@ -1,17 +1,3 @@
-/**
- * models/PayoutRequest.js
- * --------------------------------------------------
- * Partner-initiated payout requests from available balance.
- *
- * Fields:
- *   - partnerId       : ObjectId → User (partner)
- *   - amount          : number (LKR)
- *   - status          : 'Pending' | 'Paid' | 'Rejected'
- *   - transactionId   : reference when paid
- *   - rejectionReason : admin reason when status is Rejected (Requirement iv & v)
- * --------------------------------------------------
- */
-
 import mongoose from "mongoose";
 
 const payoutRequestSchema = new mongoose.Schema(

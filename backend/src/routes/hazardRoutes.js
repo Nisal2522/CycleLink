@@ -1,15 +1,3 @@
-/**
- * routes/hazardRoutes.js
- * --------------------------------------------------
- * Hazard reporting API routes (MVC: Routes layer).
- *
- * GET    /api/hazards         → hazardController.getHazards
- * POST   /api/hazards/report  → hazardController.reportHazard
- * PATCH  /api/hazards/:id     → hazardController.updateHazard
- * DELETE /api/hazards/:id     → hazardController.deleteHazard
- * --------------------------------------------------
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

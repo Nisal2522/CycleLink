@@ -1,6 +1,3 @@
-/**
- * src/services/rewardService.js — Rewards business logic & DB only (Requirement iii).
- */
 import Reward from "../models/Reward.js";
 
 export async function createReward(partnerId, { title, description, tokenCost, expiryDate }) {

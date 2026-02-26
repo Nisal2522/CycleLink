@@ -1,6 +1,3 @@
-/**
- * src/services/authService.js — Auth business logic & DB only (Requirement iii).
- */
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import { v2 as cloudinary } from "cloudinary";

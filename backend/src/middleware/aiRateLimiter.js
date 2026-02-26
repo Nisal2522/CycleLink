@@ -1,6 +1,3 @@
-/**
- * src/middleware/aiRateLimiter.js — Per-IP rate limit for AI chat (6 req / 60s).
- */
 const WINDOW_MS = 60 * 1000;
 const MAX_REQUESTS = 6;
 const store = new Map();

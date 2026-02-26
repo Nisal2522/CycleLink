@@ -1,6 +1,3 @@
-/**
- * src/validatons/hazardValidation.js — Joi schemas for hazard report/update.
- */
 import Joi from "joi";
 import { HAZARD_TYPES } from "../constants.js";
 

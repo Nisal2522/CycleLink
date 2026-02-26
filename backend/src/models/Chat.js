@@ -1,6 +1,3 @@
-/**
- * src/models/Chat.js — Chat room (Data Layer).
- */
 import mongoose from "mongoose";
 
 const chatSchema = new mongoose.Schema(

@@ -1,6 +1,3 @@
-/**
- * src/models/Route.js — Saved cycling routes (Data Layer).
- */
 import mongoose from "mongoose";
 
 const routeSchema = new mongoose.Schema(

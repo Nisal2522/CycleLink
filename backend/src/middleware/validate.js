@@ -1,6 +1,3 @@
-/**
- * src/middleware/validate.js — Runs Joi validation and forwards to next or 400.
- */
 export function validate(schema, property = "body") {
   return (req, res, next) => {
     const { error, value } = schema.validate(req[property], { abortEarly: false });

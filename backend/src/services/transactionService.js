@@ -1,6 +1,3 @@
-/**
- * src/services/transactionService.js — Transactions/Scanner business logic & DB only (Requirement iii).
- */
 import User from "../models/User.js";
 import Redemption from "../models/Redemption.js";
 import { TOKEN_VALUE } from "../models/Payout.js";

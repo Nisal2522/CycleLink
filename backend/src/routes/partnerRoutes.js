@@ -1,14 +1,3 @@
-/**
- * routes/partnerRoutes.js
- * --------------------------------------------------
- * Partner shop profile & image upload.
- *
- * GET   /api/partner/profile       → getProfile
- * PATCH /api/partner/profile       → updateProfile
- * POST  /api/partner/upload-image  → uploadShopImage
- * --------------------------------------------------
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

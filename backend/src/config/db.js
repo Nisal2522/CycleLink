@@ -1,6 +1,3 @@
-/**
- * src/config/db.js — MongoDB connection (Requirement iii).
- */
 import mongoose from "mongoose";
 
 const connectDB = async () => {

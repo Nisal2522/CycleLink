@@ -1,9 +1,3 @@
-/**
- * src/constants.js
- * --------------------------------------------------
- * Application-wide constants. Use in services, validators, and models where appropriate.
- */
-
 export const ROLES = ["cyclist", "partner", "admin"];
 
 export const ROUTE_STATUS = {

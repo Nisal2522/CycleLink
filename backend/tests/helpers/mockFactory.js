@@ -1,7 +1,3 @@
-/**
- * tests/helpers/mockFactory.js — Factory functions for consistent test data.
- */
-
 let counter = 0;
 
 export function mockObjectId() {

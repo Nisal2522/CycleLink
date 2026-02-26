@@ -1,6 +1,3 @@
-/**
- * src/validatons/rideValidation.js — Ride lifecycle validation schemas.
- */
 import Joi from "joi";
 
 export const startRideSchema = Joi.object({

@@ -1,9 +1,3 @@
-/**
- * routes/chatRoutes.js
- * --------------------------------------------------
- * Chat API routes. All require protect.
- */
-
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";

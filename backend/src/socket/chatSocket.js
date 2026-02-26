@@ -1,6 +1,3 @@
-/**
- * src/socket/chatSocket.js — Socket.io chat: auth via JWT, join chat room, send message, typing, online.
- */
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import Message from "../models/Message.js";

@@ -1,6 +1,3 @@
-/**
- * src/models/Hazard.js — Cycling hazard reports (Data Layer).
- */
 import mongoose from "mongoose";
 import { HAZARD_TYPES } from "../constants.js";
 

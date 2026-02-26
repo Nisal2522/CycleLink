@@ -1,20 +1,3 @@
-/**
- * models/Payment.js
- * --------------------------------------------------
- * Payment records for tracking completed transactions.
- * Currently used for displaying payment history in admin dashboard.
- * Can be extended for PayHere or other payment gateway integrations.
- *
- * Fields:
- *   - userId       : ObjectId → User
- *   - transactionId: Payment gateway transaction/order ID
- *   - amount       : number (LKR)
- *   - currency     : string (e.g. 'lkr')
- *   - status       : 'Success' | 'Pending'
- *   - productName  : string (e.g. 'Cycling Tour Package')
- * --------------------------------------------------
- */
-
 import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema(

@@ -1,6 +1,3 @@
-/**
- * src/controllers/rewardController.js — Rewards: request data, services, responseFormatter only.
- */
 import asyncHandler from "express-async-handler";
 import { success } from "../utils/responseFormatter.js";
 import * as rewardService from "../services/rewardService.js";

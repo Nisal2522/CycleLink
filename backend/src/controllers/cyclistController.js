@@ -1,9 +1,3 @@
-/**
- * controllers/cyclistController.js
- * --------------------------------------------------
- * Cyclist HTTP layer only. All data access via cyclistService (Controller → Service → Model).
- */
-
 import * as cyclistService from "../services/cyclistService.js";
 
 export async function getStats(req, res) {

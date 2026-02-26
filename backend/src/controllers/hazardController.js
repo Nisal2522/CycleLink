@@ -1,9 +1,3 @@
-/**
- * controllers/hazardController.js
- * --------------------------------------------------
- * Hazard HTTP layer only. All data access via hazardService (Controller → Service → Model).
- */
-
 import * as hazardService from "../services/hazardService.js";
 
 export async function getHazards(req, res) {

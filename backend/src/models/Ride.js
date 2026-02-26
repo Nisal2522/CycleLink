@@ -1,6 +1,3 @@
-/**
- * src/models/Ride.js — Single completed ride by cyclist (Data Layer).
- */
 import mongoose from "mongoose";
 
 const rideSchema = new mongoose.Schema(

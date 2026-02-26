@@ -1,6 +1,3 @@
-/**
- * src/validations/transactionValidation.js — Joi schemas for transactions/redeem (Requirement v).
- */
 import Joi from "joi";
 
 export const redeemTokensSchema = Joi.object({
