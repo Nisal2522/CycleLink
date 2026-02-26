@@ -4,8 +4,9 @@
 import express from "express";
 import cors from "cors";
 import asyncHandler from "express-async-handler";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
-import v1Routes from "./routes/v1/index.js";
 import authRoutes from "./routes/authRoutes.js";
 import cyclistRoutes from "./routes/cyclistRoutes.js";
 import hazardRoutes from "./routes/hazardRoutes.js";
@@ -43,7 +44,9 @@ app.use(
 app.use("/api/payments/payhere/notify", express.urlencoded({ extended: true }), asyncHandler(payhereNotify));
 app.use(express.json({ limit: "10mb" }));
 
-app.use("/api/v1", v1Routes);
+/* ── Swagger UI ── */
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.get("/api/cyclist/rides", protect, asyncHandler(getRides));
