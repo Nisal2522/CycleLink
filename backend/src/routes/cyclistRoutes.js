@@ -27,6 +27,8 @@ import {
   endRide,
   getActiveRide,
   cancelRide,
+  pauseRide,
+  resumeRide,
 } from "../controllers/cyclistController.js";
 import { startRideSchema, endRideSchema } from "../validatons/rideValidation.js";
 
@@ -421,6 +423,58 @@ router.post("/rides/:id/end",       validate(endRideSchema), asyncHandler(endRid
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/rides/:id/cancel",    asyncHandler(cancelRide));
+
+/**
+ * @swagger
+ * /cyclist/rides/{id}/pause:
+ *   post:
+ *     summary: Pause an active ride
+ *     description: Pause the current ride so distance stops accumulating until resumed.
+ *     tags: [Cyclist]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Ride ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Ride paused
+ *       400:
+ *         description: Ride already paused or cannot be paused
+ *       401/403/404:
+ *         description: Auth or not found
+ */
+router.post("/rides/:id/pause",     asyncHandler(pauseRide));
+
+/**
+ * @swagger
+ * /cyclist/rides/{id}/resume:
+ *   post:
+ *     summary: Resume a paused ride
+ *     description: Resume the ride so distance tracking continues.
+ *     tags: [Cyclist]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Ride ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Ride resumed
+ *       400:
+ *         description: Ride already active or cannot be resumed
+ *       401/403/404:
+ *         description: Auth or not found
+ */
+router.post("/rides/:id/resume",    asyncHandler(resumeRide));
 
 /**
  * @swagger

@@ -224,6 +224,56 @@ export async function cancelRide(userId, rideId) {
   return { message: "Ride cancelled" };
 }
 
+/**
+ * Pause an active ride (distance stops accumulating until resumed).
+ */
+export async function pauseRide(userId, rideId) {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    const err = new Error("Ride not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  if (ride.cyclistId.toString() !== userId.toString()) {
+    const err = new Error("You can only pause your own rides");
+    err.statusCode = 403;
+    throw err;
+  }
+  if (ride.status !== "active") {
+    const err = new Error(ride.status === "paused" ? "Ride is already paused" : "Ride cannot be paused");
+    err.statusCode = 400;
+    throw err;
+  }
+  ride.status = "paused";
+  await ride.save();
+  return ride;
+}
+
+/**
+ * Resume a paused ride (distance tracking continues).
+ */
+export async function resumeRide(userId, rideId) {
+  const ride = await Ride.findById(rideId);
+  if (!ride) {
+    const err = new Error("Ride not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  if (ride.cyclistId.toString() !== userId.toString()) {
+    const err = new Error("You can only resume your own rides");
+    err.statusCode = 403;
+    throw err;
+  }
+  if (ride.status !== "paused") {
+    const err = new Error(ride.status === "active" ? "Ride is already active" : "Ride cannot be resumed");
+    err.statusCode = 400;
+    throw err;
+  }
+  ride.status = "active";
+  await ride.save();
+  return ride;
+}
+
 export async function getRides(userId, period, search) {
   const now = new Date();
   let startDate = null;

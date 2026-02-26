@@ -66,6 +66,22 @@ export async function cancelRide(req, res) {
   res.json(data);
 }
 
+/**
+ * Pause an active ride.
+ */
+export async function pauseRide(req, res) {
+  const data = await cyclistService.pauseRide(req.user._id, req.params.id);
+  res.json(data);
+}
+
+/**
+ * Resume a paused ride.
+ */
+export async function resumeRide(req, res) {
+  const data = await cyclistService.resumeRide(req.user._id, req.params.id);
+  res.json(data);
+}
+
 export async function getRides(req, res) {
   const period = (req.query.period || "week").toLowerCase();
   const search = (req.query.search || "").trim().toLowerCase();
