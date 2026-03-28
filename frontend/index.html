@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>CycleLink — Ride Safe. Earn Green.</title>
+    <script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+    <script>
+      (function() {
+        try {
+          if (typeof document === 'undefined' || !document.documentElement) return;
+          var storage = typeof localStorage !== 'undefined' ? localStorage : null;
+          var isDark = storage && storage.getItem('cycle-theme') === 'dark';
+          var root = document.documentElement;
+          if (isDark) root.classList.add('dark');
+          else root.classList.remove('dark');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
