@@ -36,7 +36,10 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: { values: ROLES, message: "Role must be one of: cyclist, partner, admin" },
+      enum: {
+        values: ROLES,
+        message: "Role must be one of: cyclist, partner, admin",
+      },
       default: "cyclist",
     },
     isVerified: {
@@ -102,10 +105,30 @@ const userSchema = new mongoose.Schema(
     },
     /** Bank details for payout destination (Requirement v). Nested object: all fields optional until set. */
     bankDetails: {
-      bankName: { type: String, trim: true, maxlength: [100, "Bank name must be under 100 characters"], default: "" },
-      branchName: { type: String, trim: true, maxlength: [100, "Branch name must be under 100 characters"], default: "" },
-      accountNo: { type: String, trim: true, maxlength: [40, "Account number must be under 40 characters"], default: "" },
-      accountHolderName: { type: String, trim: true, maxlength: [100, "Account holder name must be under 100 characters"], default: "" },
+      bankName: {
+        type: String,
+        trim: true,
+        maxlength: [100, "Bank name must be under 100 characters"],
+        default: "",
+      },
+      branchName: {
+        type: String,
+        trim: true,
+        maxlength: [100, "Branch name must be under 100 characters"],
+        default: "",
+      },
+      accountNo: {
+        type: String,
+        trim: true,
+        maxlength: [40, "Account number must be under 40 characters"],
+        default: "",
+      },
+      accountHolderName: {
+        type: String,
+        trim: true,
+        maxlength: [100, "Account holder name must be under 100 characters"],
+        default: "",
+      },
     },
 
     /* ── Cyclist stats fields ── */
@@ -116,12 +139,12 @@ const userSchema = new mongoose.Schema(
     },
     totalDistance: {
       type: Number,
-      default: 0,   // in kilometres
+      default: 0, // in kilometres
       min: 0,
     },
     co2Saved: {
       type: Number,
-      default: 0,   // in kg
+      default: 0, // in kg
       min: 0,
     },
     totalRides: {
@@ -131,7 +154,7 @@ const userSchema = new mongoose.Schema(
     },
     safetyScore: {
       type: Number,
-      default: 100,  // percentage
+      default: 100, // percentage
       min: 0,
       max: 100,
     },
@@ -139,7 +162,7 @@ const userSchema = new mongoose.Schema(
   {
     timestamps: true,
     collection: "users",
-  }
+  },
 );
 
 /* ── Password hashing ── */

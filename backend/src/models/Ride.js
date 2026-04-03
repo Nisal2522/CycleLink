@@ -2,10 +2,19 @@ import mongoose from "mongoose";
 
 const rideSchema = new mongoose.Schema(
   {
-    cyclistId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
+    cyclistId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
 
     // Link to saved route (optional)
-    routeId: { type: mongoose.Schema.Types.ObjectId, ref: "Route", default: null },
+    routeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Route",
+      default: null,
+    },
 
     startLocation: { type: String, trim: true, default: "—", maxlength: 200 },
     endLocation: { type: String, trim: true, default: "—", maxlength: 200 },
@@ -19,12 +28,12 @@ const rideSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["active", "paused", "completed", "cancelled"],
-      default: "completed" // Default for backward compatibility with existing rides
+      default: "completed", // Default for backward compatibility with existing rides
     },
     startedAt: { type: Date, default: Date.now },
     endedAt: { type: Date, default: null },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 rideSchema.index({ cyclistId: 1, createdAt: -1 });
