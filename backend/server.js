@@ -14,11 +14,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.join(__dirname, ".env") });
 connectDB();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()) : []),
-  ...(process.env.FRONTEND_ORIGIN && !process.env.CORS_ORIGIN ? [process.env.FRONTEND_ORIGIN] : []),
-].filter(Boolean);
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
+  : ["http://localhost:5173"];
 
 const PORT = process.env.PORT || 5000;
 const httpServer = http.createServer(app);
