@@ -37,7 +37,10 @@ export async function getRoutes() {
  * Fetch current user's routes (all statuses) for "My Routes" page with status badges.
  */
 export async function getMyRoutes(token) {
-  const { data } = await axiosClient.get(`${API_URL}/my-routes`, authHeader(token));
+  const { data } = await axiosClient.get(
+    `${API_URL}/my-routes`,
+    authHeader(token),
+  );
   return data;
 }
 
@@ -46,7 +49,11 @@ export async function getMyRoutes(token) {
  * Only the creator can update.
  */
 export async function updateRoute(token, routeId, payload) {
-  const { data } = await axiosClient.patch(`${API_URL}/${routeId}`, payload, authHeader(token));
+  const { data } = await axiosClient.patch(
+    `${API_URL}/${routeId}`,
+    payload,
+    authHeader(token),
+  );
   return data;
 }
 
@@ -54,7 +61,10 @@ export async function updateRoute(token, routeId, payload) {
  * Delete a route by ID. Only the creator can delete.
  */
 export async function deleteRoute(token, routeId) {
-  const { data } = await axiosClient.delete(`${API_URL}/${routeId}`, authHeader(token));
+  const { data } = await axiosClient.delete(
+    `${API_URL}/${routeId}`,
+    authHeader(token),
+  );
   return data;
 }
 
@@ -68,7 +78,16 @@ export async function rateRoute(token, routeId, payload) {
   const { data } = await axiosClient.post(
     `${API_URL}/${routeId}/rate`,
     payload,
-    authHeader(token)
+    authHeader(token),
+  );
+  return data;
+}
+
+export async function updateRouteRating(token, routeId, payload) {
+  const { data } = await axiosClient.put(
+    `${API_URL}/${routeId}/rate`,
+    payload,
+    authHeader(token),
   );
   return data;
 }
@@ -90,7 +109,7 @@ export async function getRouteRatings(routeId) {
 export async function deleteRating(token, routeId) {
   const { data } = await axiosClient.delete(
     `${API_URL}/${routeId}/rating`,
-    authHeader(token)
+    authHeader(token),
   );
   return data;
 }

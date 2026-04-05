@@ -58,7 +58,7 @@ async function apiRequest(endpoint, options = {}) {
     } catch {
       throw new ApiError(
         "Server returned an unexpected response. Please try again.",
-        response.status
+        response.status,
       );
     }
 
@@ -79,14 +79,14 @@ async function apiRequest(endpoint, options = {}) {
     // Timeout
     if (err.name === "AbortError") {
       throw new ApiError(
-        "Request timed out. Please check your connection and try again."
+        "Request timed out. Please check your connection and try again.",
       );
     }
 
     // Network failure (offline, DNS, CORS, etc.)
     if (err instanceof TypeError && err.message.includes("fetch")) {
       throw new ApiError(
-        "Unable to connect to the server. Please check your internet connection."
+        "Unable to connect to the server. Please check your internet connection.",
       );
     }
 
@@ -141,7 +141,7 @@ export async function registerUser(
   email,
   password,
   role = "cyclist",
-  shopName
+  shopName,
 ) {
   return postJSON("/register", {
     name: name.trim(),
