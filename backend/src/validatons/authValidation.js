@@ -22,3 +22,16 @@ export const updateProfileSchema = Joi.object({
   name: Joi.string().trim().min(2).max(50),
   profileImage: Joi.string().trim().allow(""),
 });
+
+export const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string().min(8).max(128).required(),
+  confirmNewPassword: Joi.string()
+    .valid(Joi.ref("newPassword"))
+    .required()
+    .messages({ "any.only": "Passwords do not match" }),
+});
+
+export const deleteAccountSchema = Joi.object({
+  password: Joi.string().required(),
+});

@@ -1,3 +1,9 @@
+/**
+ * controllers/adminController.js
+ * --------------------------------------------------
+ * Admin HTTP layer only. All data access via adminService or payoutService (Controller → Service → Model).
+ */
+
 import * as adminService from "../services/adminService.js";
 import * as payoutService from "../services/payoutService.js";
 import { buildPayoutPaymentParams } from "../utils/payhereHelper.js";
@@ -79,7 +85,10 @@ export async function resolveAdminHazard(req, res) {
     const data = await adminService.resolveAdminHazard(req.params.id);
     return res.json(data);
   } catch (err) {
-    if (err.statusCode === 404) return res.status(404).json({ message: "Hazard not found", _id: req.params.id });
+    if (err.statusCode === 404)
+      return res
+        .status(404)
+        .json({ message: "Hazard not found", _id: req.params.id });
     throw err;
   }
 }
@@ -89,7 +98,10 @@ export async function deleteAdminHazard(req, res) {
     const data = await adminService.deleteAdminHazard(req.params.id);
     return res.json(data);
   } catch (err) {
-    if (err.statusCode === 404) return res.status(404).json({ message: "Hazard not found", _id: req.params.id });
+    if (err.statusCode === 404)
+      return res
+        .status(404)
+        .json({ message: "Hazard not found", _id: req.params.id });
     throw err;
   }
 }
@@ -107,7 +119,11 @@ export async function getPayouts(req, res) {
 export async function calculatePayouts(req, res) {
   const { month } = req.body;
   const result = await payoutService.calculatePayouts(month);
-  res.json({ message: "Payouts calculated", count: result.count, payouts: result.payouts });
+  res.json({
+    message: "Payouts calculated",
+    count: result.count,
+    payouts: result.payouts,
+  });
 }
 
 export async function updatePayoutAdjustment(req, res) {
@@ -181,6 +197,8 @@ export async function approvePayoutRequest(req, res) {
 
 export async function rejectPayoutRequest(req, res) {
   const { rejectionReason } = req.body;
-  const result = await payoutService.rejectPayoutRequest(req.params.id, { rejectionReason });
+  const result = await payoutService.rejectPayoutRequest(req.params.id, {
+    rejectionReason,
+  });
   success(res, result);
 }

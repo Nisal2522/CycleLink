@@ -1,7 +1,33 @@
+/**
+ * routes/authRoutes.js
+ * --------------------------------------------------
+ * Authentication API routes (MVC: Routes layer).
+ *
+ * POST /api/auth/register — Create account  → authController.registerUser
+ * POST /api/auth/login    — Login & token   → authController.loginUser
+ * GET  /api/auth/profile — Get profile     → authController.getProfile
+ * --------------------------------------------------
+ */
+
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";
-import { registerUser, loginUser, googleLogin, getPublicStats, getProfile, updateProfile, uploadAvatar } from "../controllers/authController.js";
+import {
+  registerUser,
+  loginUser,
+  googleLogin,
+  getPublicStats,
+  getProfile,
+  updateProfile,
+  uploadAvatar,
+  changePassword,
+  deleteOwnAccount,
+} from "../controllers/authController.js";
+import { validate } from "../middleware/validate.js";
+import {
+  changePasswordSchema,
+  deleteAccountSchema,
+} from "../validatons/authValidation.js";
 
 const router = express.Router();
 
@@ -315,5 +341,125 @@ router.patch("/profile", protect, asyncHandler(updateProfile));
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post("/upload-avatar", protect, asyncHandler(uploadAvatar));
+
+/**
+ * @swagger
+ * /auth/change-password:
+ *   put:
+ *     summary: Change current user password
+ *     description: Change the authenticated user's password by providing the current password and a new one.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *               - confirmNewPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: OldSecret123!
+ *               newPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: NewSecret456!
+ *               confirmNewPassword:
+ *                 type: string
+ *                 format: password
+ *                 example: NewSecret456!
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         message:
+ *                           type: string
+ *                           example: Password changed successfully
+ *       401:
+ *         description: Current password is incorrect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.put(
+  "/change-password",
+  protect,
+  validate(changePasswordSchema),
+  asyncHandler(changePassword),
+);
+
+/**
+ * @swagger
+ * /auth/account:
+ *   delete:
+ *     summary: Delete own account
+ *     description: Permanently delete the authenticated user's account and all associated data. Requires password confirmation. Admin accounts cannot be self-deleted.
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: Secret123!
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         message:
+ *                           type: string
+ *                           example: Account deleted successfully
+ *       401:
+ *         description: Incorrect password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Admin accounts cannot be self-deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.delete(
+  "/account",
+  protect,
+  validate(deleteAccountSchema),
+  asyncHandler(deleteOwnAccount),
+);
 
 export default router;

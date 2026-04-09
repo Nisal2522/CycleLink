@@ -1,7 +1,15 @@
+/**
+ * src/services/authService.js — Auth business logic & DB only (Requirement iii).
+ */
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
 import { v2 as cloudinary } from "cloudinary";
 import User from "../models/User.js";
+import Ride from "../models/Ride.js";
+import Route from "../models/Route.js";
+import Payment from "../models/Payment.js";
+import Hazard from "../models/Hazard.js";
+import Redemption from "../models/Redemption.js";
 import generateToken from "../utils/generateToken.js";
 
 export async function register({ name, email, password, role, shopName }) {
@@ -67,7 +75,10 @@ export async function googleLogin(credential, clientId) {
   const client = new OAuth2Client(clientId);
   let payload;
   try {
-    const ticket = await client.verifyIdToken({ idToken: credential, audience: clientId });
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: clientId,
+    });
     payload = ticket.getPayload();
   } catch {
     const err = new Error("Invalid or expired Google token. Please try again.");
@@ -75,7 +86,9 @@ export async function googleLogin(credential, clientId) {
     throw err;
   }
   const email = payload.email && payload.email.trim().toLowerCase();
-  const name = (payload.name || payload.given_name || email || "User").trim().slice(0, 50);
+  const name = (payload.name || payload.given_name || email || "User")
+    .trim()
+    .slice(0, 50);
   if (!email) {
     const err = new Error("Google account did not provide an email");
     err.statusCode = 400;
@@ -137,9 +150,14 @@ export async function updateProfile(userId, { name, profileImage }) {
     throw err;
   }
   if (name !== undefined) user.name = String(name).trim().slice(0, 50);
-  if (profileImage !== undefined) user.profileImage = String(profileImage).trim();
+  if (profileImage !== undefined)
+    user.profileImage = String(profileImage).trim();
   await user.save();
-  return { _id: user._id, name: user.name, profileImage: user.profileImage || "" };
+  return {
+    _id: user._id,
+    name: user.name,
+    profileImage: user.profileImage || "",
+  };
 }
 
 export async function uploadAvatar(userId, imageBase64, cloudinaryConfig) {
@@ -161,6 +179,53 @@ export async function uploadAvatar(userId, imageBase64, cloudinaryConfig) {
 
 export async function getPublicStats() {
   return { totalUsers: await User.countDocuments() };
+}
+
+export async function changePassword(userId, currentPassword, newPassword) {
+  const user = await User.findById(userId);
+  if (!user) {
+    const err = new Error("User not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  const isMatch = await user.matchPassword(currentPassword);
+  if (!isMatch) {
+    const err = new Error("Current password is incorrect");
+    err.statusCode = 401;
+    throw err;
+  }
+  user.password = newPassword;
+  await user.save();
+  return { message: "Password changed successfully" };
+}
+
+export async function deleteOwnAccount(userId, password) {
+  const user = await User.findById(userId);
+  if (!user) {
+    const err = new Error("User not found");
+    err.statusCode = 404;
+    throw err;
+  }
+  if (user.role === "admin") {
+    const err = new Error("Admin accounts cannot be self-deleted");
+    err.statusCode = 403;
+    throw err;
+  }
+  const isMatch = await user.matchPassword(password);
+  if (!isMatch) {
+    const err = new Error("Incorrect password");
+    err.statusCode = 401;
+    throw err;
+  }
+  await Promise.all([
+    Ride.deleteMany({ cyclistId: userId }),
+    Route.deleteMany({ creatorId: userId }),
+    Payment.deleteMany({ userId }),
+    Hazard.deleteMany({ reportedBy: userId }),
+    Redemption.deleteMany({ cyclistId: userId }),
+  ]);
+  await User.findByIdAndDelete(userId);
+  return { message: "Account deleted successfully" };
 }
 
 /**
