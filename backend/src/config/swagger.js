@@ -1,3 +1,6 @@
+/**
+ * src/config/swagger.js — Swagger/OpenAPI spec configuration.
+ */
 import swaggerJsdoc from "swagger-jsdoc";
 
 const swaggerSpec = swaggerJsdoc({
@@ -22,7 +25,11 @@ const swaggerSpec = swaggerJsdoc({
           properties: {
             _id: { type: "string", example: "665f1a2b3c4d5e6f7a8b9c0d" },
             name: { type: "string", example: "John Doe" },
-            email: { type: "string", format: "email", example: "john@example.com" },
+            email: {
+              type: "string",
+              format: "email",
+              example: "john@example.com",
+            },
             role: { type: "string", enum: ["cyclist", "partner", "admin"] },
             shopName: { type: "string" },
             shopImage: { type: "string" },
@@ -50,7 +57,10 @@ const swaggerSpec = swaggerJsdoc({
             durationText: { type: "string" },
             tokensEarned: { type: "integer" },
             co2Saved: { type: "number" },
-            status: { type: "string", enum: ["active", "paused", "completed", "cancelled"] },
+            status: {
+              type: "string",
+              enum: ["active", "paused", "completed", "cancelled"],
+            },
             startedAt: { type: "string", format: "date-time" },
             endedAt: { type: "string", format: "date-time", nullable: true },
           },
@@ -73,18 +83,33 @@ const swaggerSpec = swaggerJsdoc({
             _id: { type: "string" },
             lat: { type: "number", example: 6.9271 },
             lng: { type: "number", example: 79.8612 },
-            type: { type: "string", enum: ["pothole", "construction", "accident", "flooding", "other"] },
+            type: {
+              type: "string",
+              enum: [
+                "pothole",
+                "construction",
+                "accident",
+                "flooding",
+                "other",
+              ],
+            },
             description: { type: "string" },
             reportedBy: { type: "string" },
             active: { type: "boolean" },
-            status: { type: "string", enum: ["reported", "verified", "resolved", "invalid"] },
+            status: {
+              type: "string",
+              enum: ["reported", "verified", "resolved", "invalid"],
+            },
             verifications: {
               type: "array",
               items: {
                 type: "object",
                 properties: {
                   userId: { type: "string" },
-                  status: { type: "string", enum: ["exists", "resolved", "spam"] },
+                  status: {
+                    type: "string",
+                    enum: ["exists", "resolved", "spam"],
+                  },
                   timestamp: { type: "string", format: "date-time" },
                 },
               },
@@ -101,11 +126,17 @@ const swaggerSpec = swaggerJsdoc({
             creatorId: { type: "string" },
             startLocation: { type: "string", example: "Colombo Fort" },
             endLocation: { type: "string", example: "Galle Face" },
-            path: { type: "array", items: { $ref: "#/components/schemas/PathPoint" } },
+            path: {
+              type: "array",
+              items: { $ref: "#/components/schemas/PathPoint" },
+            },
             distance: { type: "string", example: "3.5 km" },
             duration: { type: "string" },
             weatherCondition: { type: "string" },
-            status: { type: "string", enum: ["pending", "approved", "rejected"] },
+            status: {
+              type: "string",
+              enum: ["pending", "approved", "rejected"],
+            },
             ratings: {
               type: "array",
               items: {
