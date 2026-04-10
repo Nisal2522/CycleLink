@@ -24,4 +24,4 @@ export default defineConfig({
       'Cross-Origin-Embedder-Policy': 'unsafe-none',
     },
   },
-})
+});
