@@ -32,6 +32,7 @@ import {
   CheckCircle2,
   Calendar,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import useAuth from "../hooks/useAuth";
 import {
   getPartnerRewards,
@@ -234,8 +235,10 @@ export default function PartnerDashboard() {
     try {
       await deleteReward(token, rewardId);
       setRewards((prev) => (Array.isArray(prev) ? prev : []).filter((r) => r._id !== rewardId));
-    } catch {
-      // ignore for now; you could surface a toast here
+      toast.success("Reward removed");
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || "Could not delete reward";
+      toast.error(msg);
     }
   };
 

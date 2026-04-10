@@ -51,7 +51,6 @@ export async function deleteReward(partnerId, rewardId) {
     err.statusCode = 403;
     throw err;
   }
-  reward.active = false;
-  await reward.save();
-  return { message: "Reward archived", _id: rewardId };
+  await Reward.deleteOne({ _id: reward._id });
+  return { message: "Reward deleted", _id: rewardId };
 }

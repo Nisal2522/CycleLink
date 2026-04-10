@@ -5,6 +5,7 @@ const mockReward = {
   create: jest.fn(),
   find: jest.fn(),
   findById: jest.fn(),
+  deleteOne: jest.fn(),
 };
 jest.unstable_mockModule("../../src/models/Reward.js", () => ({
   default: mockReward,
@@ -165,14 +166,14 @@ describe("deleteReward", () => {
     }
   });
 
-  it("should set active to false and save on success", async () => {
-    const reward = makeReward();
-    mockReward.findById.mockResolvedValue(reward);
+  it("should remove document when partner owns reward", async () => {
+    const doc = makeReward();
+    mockReward.findById.mockResolvedValue(doc);
+    mockReward.deleteOne.mockResolvedValue({ deletedCount: 1 });
 
     const result = await deleteReward("partner1", "reward1");
 
-    expect(reward.active).toBe(false);
-    expect(reward.save).toHaveBeenCalled();
-    expect(result).toEqual({ message: "Reward archived", _id: "reward1" });
+    expect(mockReward.deleteOne).toHaveBeenCalledWith({ _id: doc._id });
+    expect(result).toEqual({ message: "Reward deleted", _id: "reward1" });
   });
 });

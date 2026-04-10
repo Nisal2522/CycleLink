@@ -128,7 +128,7 @@ describe("Reward endpoints (/api/rewards)", () => {
   // ────────── DELETE /api/rewards/:id ──────────
   describe("DELETE /api/rewards/:id", () => {
     it("returns 200 when reward is deleted", async () => {
-      rewardService.deleteReward.mockResolvedValue({ message: "Reward archived" });
+      rewardService.deleteReward.mockResolvedValue({ message: "Reward deleted" });
 
       const res = await request(buildApp()).delete("/api/rewards/6650a0000000000000000055");
 

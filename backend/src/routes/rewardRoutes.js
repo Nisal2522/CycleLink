@@ -198,8 +198,8 @@ router.patch("/:id", asyncHandler(updateReward));
  * @swagger
  * /rewards/{id}:
  *   delete:
- *     summary: Delete (archive) a reward
- *     description: Soft-delete a reward by archiving it. Only the owning partner can delete their rewards.
+ *     summary: Delete a reward
+ *     description: Permanently removes the reward document. Only the owning partner can delete their rewards.
  *     tags: [Rewards]
  *     security:
  *       - bearerAuth: []
@@ -207,7 +207,7 @@ router.patch("/:id", asyncHandler(updateReward));
  *       - $ref: '#/components/parameters/pathId'
  *     responses:
  *       200:
- *         description: Reward deleted (archived) successfully
+ *         description: Reward deleted successfully
  *         content:
  *           application/json:
  *             schema:
