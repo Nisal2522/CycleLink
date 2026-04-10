@@ -1,8 +1,24 @@
+/**
+ * routes/routeRoutes.js
+ * --------------------------------------------------
+ * Saved routes API (MVC: Routes layer).
+ *
+ * POST   /api/routes     → routeController.createRoute (protected)
+ * GET    /api/routes     → routeController.getRoutes (public)
+ * PATCH  /api/routes/:id → routeController.updateRoute (protected)
+ * DELETE /api/routes/:id → routeController.deleteRoute (protected)
+ * --------------------------------------------------
+ */
+
 import express from "express";
 import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";
 import { validate } from "../middleware/validate.js";
-import { createRouteSchema, updateRouteSchema, rateRouteSchema } from "../validatons/routeValidation.js";
+import {
+  createRouteSchema,
+  updateRouteSchema,
+  rateRouteSchema,
+} from "../validatons/routeValidation.js";
 import {
   createRoute,
   getRoutes,
@@ -65,7 +81,12 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post("/", protect, validate(createRouteSchema), asyncHandler(createRoute));
+router.post(
+  "/",
+  protect,
+  validate(createRouteSchema),
+  asyncHandler(createRoute),
+);
 
 /**
  * @swagger
@@ -140,7 +161,12 @@ router.get("/my-routes", protect, asyncHandler(getMyRoutes));
  *       409:
  *         description: User has already rated this route
  */
-router.post("/:id/rate", protect, validate(rateRouteSchema), asyncHandler(rateRoute));
+router.post(
+  "/:id/rate",
+  protect,
+  validate(rateRouteSchema),
+  asyncHandler(rateRoute),
+);
 
 /**
  * @swagger
@@ -185,7 +211,12 @@ router.post("/:id/rate", protect, validate(rateRouteSchema), asyncHandler(rateRo
  *       404:
  *         description: Route not found or user has not rated this route
  */
-router.put("/:id/rate", protect, validate(rateRouteSchema), asyncHandler(updateRating));
+router.put(
+  "/:id/rate",
+  protect,
+  validate(rateRouteSchema),
+  asyncHandler(updateRating),
+);
 
 /**
  * @swagger
@@ -285,7 +316,12 @@ router.delete("/:id/rating", protect, asyncHandler(deleteRating));
  *       404:
  *         description: Route not found
  */
-router.patch("/:id", protect, validate(updateRouteSchema), asyncHandler(updateRoute));
+router.patch(
+  "/:id",
+  protect,
+  validate(updateRouteSchema),
+  asyncHandler(updateRoute),
+);
 
 /**
  * @swagger

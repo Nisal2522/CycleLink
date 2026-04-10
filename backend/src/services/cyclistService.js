@@ -3,11 +3,16 @@ import Reward from "../models/Reward.js";
 import Ride from "../models/Ride.js";
 import Route from "../models/Route.js";
 import { ROLES } from "../constants.js";
-import { CO2_PER_KM, TOKENS_PER_KM, MAX_DISTANCE_KM, LIMITS } from "../constants.js";
+import {
+  CO2_PER_KM,
+  TOKENS_PER_KM,
+  MAX_DISTANCE_KM,
+  LIMITS,
+} from "../constants.js";
 
 export async function getStats(userId) {
   const user = await User.findById(userId).select(
-    "name email tokens totalDistance co2Saved totalRides safetyScore"
+    "name email tokens totalDistance co2Saved totalRides safetyScore",
   );
   if (!user) {
     const err = new Error("User not found");
@@ -47,7 +52,8 @@ export async function updateDistance(userId, body) {
   await user.save();
   await Ride.create({
     cyclistId: userId,
-    startLocation: startLocation != null ? String(startLocation).trim() || "—" : "—",
+    startLocation:
+      startLocation != null ? String(startLocation).trim() || "—" : "—",
     endLocation: endLocation != null ? String(endLocation).trim() || "—" : "—",
     distance: parseFloat(distance.toFixed(2)),
     durationText: duration != null ? String(duration).trim() : "",
@@ -84,7 +90,9 @@ export async function startRide(userId, body) {
   });
 
   if (activeRide) {
-    const err = new Error("You already have an active ride. Please end it first.");
+    const err = new Error(
+      "You already have an active ride. Please end it first.",
+    );
     err.statusCode = 400;
     throw err;
   }
@@ -218,56 +226,6 @@ export async function cancelRide(userId, rideId) {
   return { message: "Ride cancelled" };
 }
 
-/**
- * Pause an active ride (distance stops accumulating until resumed).
- */
-export async function pauseRide(userId, rideId) {
-  const ride = await Ride.findById(rideId);
-  if (!ride) {
-    const err = new Error("Ride not found");
-    err.statusCode = 404;
-    throw err;
-  }
-  if (ride.cyclistId.toString() !== userId.toString()) {
-    const err = new Error("You can only pause your own rides");
-    err.statusCode = 403;
-    throw err;
-  }
-  if (ride.status !== "active") {
-    const err = new Error(ride.status === "paused" ? "Ride is already paused" : "Ride cannot be paused");
-    err.statusCode = 400;
-    throw err;
-  }
-  ride.status = "paused";
-  await ride.save();
-  return ride;
-}
-
-/**
- * Resume a paused ride (distance tracking continues).
- */
-export async function resumeRide(userId, rideId) {
-  const ride = await Ride.findById(rideId);
-  if (!ride) {
-    const err = new Error("Ride not found");
-    err.statusCode = 404;
-    throw err;
-  }
-  if (ride.cyclistId.toString() !== userId.toString()) {
-    const err = new Error("You can only resume your own rides");
-    err.statusCode = 403;
-    throw err;
-  }
-  if (ride.status !== "paused") {
-    const err = new Error(ride.status === "active" ? "Ride is already active" : "Ride cannot be resumed");
-    err.statusCode = 400;
-    throw err;
-  }
-  ride.status = "active";
-  await ride.save();
-  return ride;
-}
-
 export async function getRides(userId, period, search) {
   const now = new Date();
   let startDate = null;
@@ -282,12 +240,15 @@ export async function getRides(userId, period, search) {
   }
   const match = { cyclistId: userId };
   if (startDate) match.createdAt = { $gte: startDate };
-  let rides = await Ride.find(match).sort({ createdAt: -1 }).limit(LIMITS.RIDES_HISTORY).lean();
+  let rides = await Ride.find(match)
+    .sort({ createdAt: -1 })
+    .limit(LIMITS.RIDES_HISTORY)
+    .lean();
   if (search) {
     rides = rides.filter(
       (r) =>
         (r.startLocation && r.startLocation.toLowerCase().includes(search)) ||
-        (r.endLocation && r.endLocation.toLowerCase().includes(search))
+        (r.endLocation && r.endLocation.toLowerCase().includes(search)),
     );
   }
   const summary = rides.reduce(
@@ -298,7 +259,7 @@ export async function getRides(userId, period, search) {
       acc.totalCo2 += r.co2Saved;
       return acc;
     },
-    { totalDistance: 0, totalRides: 0, totalTokens: 0, totalCo2: 0 }
+    { totalDistance: 0, totalRides: 0, totalTokens: 0, totalCo2: 0 },
   );
   return {
     summary: {
