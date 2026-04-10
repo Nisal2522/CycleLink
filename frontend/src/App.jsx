@@ -1,28 +1,12 @@
-/**
- * App.jsx
- * --------------------------------------------------
- * Root application component for CycleLink.
- *
- * Architecture:
- *   BrowserRouter → AuthProvider → App
- *     ├── /                        → LandingPage       (public)
- *     ├── /login                   → LoginPage         (public)
- *     ├── /dashboard               → CyclistDashboard  ─┐
- *     │   ├── /dashboard/map       → MapPage            │
- *     │   ├── /dashboard/rewards   → RewardsPage        ├ DashboardLayout (nested)
- *     │   ├── /dashboard/leaderboard → LeaderboardPage  │
- *     │   └── /dashboard/history   → TripHistoryPage   ─┘
- *     ├── /partner-dashboard       → PartnerDashboard   (DashboardLayout)
- *     ├── /admin-panel             → AdminDashboard     (DashboardLayout)
- *     └── *                        → redirect
- *
- * DashboardLayout uses <Outlet /> so the sidebar remains
- * stable when navigating between sub-pages.
- * --------------------------------------------------
- */
-
 import { useEffect } from "react";
-import { Routes, Route, Navigate, useLocation, useNavigate, Outlet } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+  Outlet,
+} from "react-router-dom";
 import { AUTH_LOGOUT_EVENT } from "./constants/auth";
 import { AnimatePresence } from "framer-motion";
 
@@ -48,6 +32,7 @@ import RedeemRewardsPage from "./pages/RedeemRewardsPage";
 import SavedRoutesPage from "./pages/SavedRoutesPage";
 import PaymentPage from "./pages/PaymentPage";
 import ChatPage from "./pages/ChatPage";
+import SettingsPage from "./pages/SettingsPage";
 
 // Features (RBAC — Requirement iv)
 import { ProtectedRoute, UnauthorizedPage } from "./features/auth";
@@ -128,7 +113,8 @@ export default function App() {
       navigate("/login", { replace: true, state: { message } });
     };
     window.addEventListener(AUTH_LOGOUT_EVENT, handleUnauthorized);
-    return () => window.removeEventListener(AUTH_LOGOUT_EVENT, handleUnauthorized);
+    return () =>
+      window.removeEventListener(AUTH_LOGOUT_EVENT, handleUnauthorized);
   }, [navigate]);
 
   return (
@@ -136,108 +122,117 @@ export default function App() {
       <ChatBot />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-        {/* ── Public routes ── */}
-        <Route
-          path="/"
-          element={
-            <PageTransition>
-              <LandingPage />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PageTransition>
-              <LoginPage />
-            </PageTransition>
-          }
-        />
-        <Route
-          path="/unauthorized"
-          element={
-            <PageTransition>
-              <UnauthorizedPage />
-            </PageTransition>
-          }
-        />
-
-        {/* ── Cyclist dashboard (Profile, My Rides, etc.) — cyclist only ── */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["cyclist"]}>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<CyclistDashboard />} />
-          <Route path="map" element={<MapPage />} />
-          <Route path="rewards" element={<RewardsPage />} />
-          <Route path="leaderboard" element={<LeaderboardPage />} />
-          <Route path="history" element={<TripHistoryPage />} />
-          <Route path="weather" element={<WeatherPage />} />
-          <Route path="redeem" element={<RedeemRewardsPage />} />
-          <Route path="routes" element={<SavedRoutesPage />} />
-          <Route path="payment" element={<PaymentPage />} />
-          <Route path="messages" element={<ChatPage />} />
-        </Route>
-
-        {/* ── Partner dashboard (Scanner, Rewards Management) — partner only ── */}
-        <Route
-          path="/partner-dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["partner"]}>
+          {/* ── Public routes ── */}
+          <Route
+            path="/"
+            element={
               <PageTransition>
-                <SidebarProvider>
-                  <ChatUnreadProvider>
-                    <DashboardContent />
-                  </ChatUnreadProvider>
-                </SidebarProvider>
+                <LandingPage />
               </PageTransition>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<PartnerDashboard />} />
-          <Route path="scan" element={<PartnerScanPage />} />
-          <Route path="shop-profile" element={<ShopProfile />} />
-          <Route path="bank-settings" element={<BankSettings />} />
-          <Route path="earnings" element={<EarningsPage />} />
-          <Route path="messages" element={<ChatPage />} />
-        </Route>
-
-        {/* ── Admin panel ── */}
-        <Route
-          path="/admin-panel"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            }
+          />
+          <Route
+            path="/login"
+            element={
               <PageTransition>
-                <SidebarProvider>
-                  <ChatUnreadProvider>
-                    <DashboardContent />
-                  </ChatUnreadProvider>
-                </SidebarProvider>
+                <LoginPage />
               </PageTransition>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="route-overview" element={<AdminRouteOverviewPage />} />
-          <Route path="messages" element={<ChatPage />} />
-        </Route>
+            }
+          />
+          <Route
+            path="/unauthorized"
+            element={
+              <PageTransition>
+                <UnauthorizedPage />
+              </PageTransition>
+            }
+          />
 
-        {/* ── Catch-all ── */}
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={user ? getDashboardPath(user.role) : "/"}
-              replace
-            />
-          }
-        />
-      </Routes>
-    </AnimatePresence>
+          {/* ── Cyclist dashboard (Profile, My Rides, etc.) — cyclist only ── */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["cyclist"]}>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<CyclistDashboard />} />
+            <Route path="map" element={<MapPage />} />
+            <Route path="rewards" element={<RewardsPage />} />
+            <Route path="leaderboard" element={<LeaderboardPage />} />
+            <Route path="history" element={<TripHistoryPage />} />
+            <Route path="weather" element={<WeatherPage />} />
+            <Route path="redeem" element={<RedeemRewardsPage />} />
+            <Route path="routes" element={<SavedRoutesPage />} />
+            <Route path="payment" element={<PaymentPage />} />
+            <Route path="messages" element={<ChatPage />} />
+          </Route>
+
+          {/* ── Partner dashboard (Scanner, Rewards Management) — partner only ── */}
+          <Route
+            path="/partner-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["partner"]}>
+                <PageTransition>
+                  <SidebarProvider>
+                    <ChatUnreadProvider>
+                      <DashboardContent />
+                    </ChatUnreadProvider>
+                  </SidebarProvider>
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<PartnerDashboard />} />
+            <Route path="scan" element={<PartnerScanPage />} />
+            <Route path="shop-profile" element={<ShopProfile />} />
+            <Route path="bank-settings" element={<BankSettings />} />
+            <Route path="earnings" element={<EarningsPage />} />
+            <Route path="messages" element={<ChatPage />} />
+          </Route>
+
+          {/* ── Admin panel ── */}
+          <Route
+            path="/admin-panel"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <PageTransition>
+                  <SidebarProvider>
+                    <ChatUnreadProvider>
+                      <DashboardContent />
+                    </ChatUnreadProvider>
+                  </SidebarProvider>
+                </PageTransition>
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="route-overview" element={<AdminRouteOverviewPage />} />
+            <Route path="messages" element={<ChatPage />} />
+          </Route>
+
+          {/* ── Settings (all roles) ── */}
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute allowedRoles={["cyclist", "partner", "admin"]}>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<SettingsPage />} />
+          </Route>
+
+          {/* ── Catch-all ── */}
+          <Route
+            path="*"
+            element={
+              <Navigate to={user ? getDashboardPath(user.role) : "/"} replace />
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </div>
   );
 }

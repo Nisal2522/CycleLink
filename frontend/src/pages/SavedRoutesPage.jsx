@@ -30,7 +30,15 @@ import {
   Star,
   X,
 } from "lucide-react";
-import { getRoutes, getMyRoutes, deleteRoute, rateRoute, getRouteRatings, deleteRating } from "../services/routeService";
+import {
+  getRoutes,
+  getMyRoutes,
+  deleteRoute,
+  rateRoute,
+  updateRouteRating,
+  getRouteRatings,
+  deleteRating,
+} from "../services/routeService";
 import useAuth from "../hooks/useAuth";
 
 const cardVariants = {
@@ -45,7 +53,11 @@ const cardVariants = {
 function formatDate(dateStr) {
   if (!dateStr) return "";
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }
 
 export default function SavedRoutesPage() {
@@ -64,33 +76,44 @@ export default function SavedRoutesPage() {
 
   // Load approved routes + current user's pending/rejected so status (Live/Pending/Rejected) shows for own routes.
   // Refetch on focus so when admin approves a route, creator sees "Live" without leaving the page.
-  const loadRoutes = useCallback(async (isRefresh = false) => {
-    if (isRefresh) setRefreshing(true);
-    else setLoading(true);
-    setError("");
-    try {
-      const approved = await getRoutes().then((d) => (Array.isArray(d) ? d : []));
-      if (!token) {
-        setRoutes(approved);
-        return;
+  const loadRoutes = useCallback(
+    async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
+      else setLoading(true);
+      setError("");
+      try {
+        const approved = await getRoutes().then((d) =>
+          Array.isArray(d) ? d : [],
+        );
+        if (!token) {
+          setRoutes(approved);
+          return;
+        }
+        const myRoutes = await getMyRoutes(token).then((d) =>
+          Array.isArray(d) ? d : [],
+        );
+        const approvedIds = new Set(approved.map((r) => String(r._id)));
+        const myPendingOrRejected = myRoutes.filter(
+          (r) => r.status !== "approved" && r.status !== "",
+        );
+        const combined = [...approved];
+        myPendingOrRejected.forEach((r) => {
+          if (!approvedIds.has(String(r._id))) combined.push(r);
+        });
+        combined.sort(
+          (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+        );
+        setRoutes(combined);
+      } catch (err) {
+        setError(err.response?.data?.message || "Failed to load routes");
+        setRoutes([]);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-      const myRoutes = await getMyRoutes(token).then((d) => (Array.isArray(d) ? d : []));
-      const approvedIds = new Set(approved.map((r) => String(r._id)));
-      const myPendingOrRejected = myRoutes.filter((r) => r.status !== "approved" && r.status !== "");
-      const combined = [...approved];
-      myPendingOrRejected.forEach((r) => {
-        if (!approvedIds.has(String(r._id))) combined.push(r);
-      });
-      combined.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-      setRoutes(combined);
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to load routes");
-      setRoutes([]);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [token]);
+    },
+    [token],
+  );
 
   useEffect(() => {
     loadRoutes();
@@ -134,12 +157,20 @@ export default function SavedRoutesPage() {
       setRoutes((prev) => prev.filter((r) => r._id !== deleteConfirmRoute._id));
       setDeleteConfirmRoute(null);
       toast.success("Route deleted successfully", {
-        style: { background: "#fdf2f8", border: "1px solid #fbcfe8", color: "#80134D" },
+        style: {
+          background: "#fdf2f8",
+          border: "1px solid #fbcfe8",
+          color: "#80134D",
+        },
         iconTheme: { primary: "#80134D" },
       });
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete route", {
-        style: { background: "#fdf2f8", border: "1px solid #fbcfe8", color: "#80134D" },
+        style: {
+          background: "#fdf2f8",
+          border: "1px solid #fbcfe8",
+          color: "#80134D",
+        },
         iconTheme: { primary: "#80134D" },
       });
     } finally {
@@ -154,9 +185,23 @@ export default function SavedRoutesPage() {
 
   const getStatusBadge = (status) => {
     const s = (status || "").toLowerCase();
-    if (s === "approved" || s === "") return { label: "Live", className: "bg-emerald-100 text-emerald-700 border-emerald-200", showDot: true };
-    if (s === "rejected") return { label: "Rejected", className: "bg-red-100 text-red-700 border-red-200", showDot: false };
-    return { label: "Pending", className: "bg-amber-100 text-amber-700 border-amber-200", showDot: false };
+    if (s === "approved" || s === "")
+      return {
+        label: "Live",
+        className: "bg-emerald-100 text-emerald-700 border-emerald-200",
+        showDot: true,
+      };
+    if (s === "rejected")
+      return {
+        label: "Rejected",
+        className: "bg-red-100 text-red-700 border-red-200",
+        showDot: false,
+      };
+    return {
+      label: "Pending",
+      className: "bg-amber-100 text-amber-700 border-amber-200",
+      showDot: false,
+    };
   };
 
   return (
@@ -175,8 +220,12 @@ export default function SavedRoutesPage() {
                 <Route className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Map (Routes)</h1>
-                <p className="text-sm text-slate-500">Community saved routes — plan and explore</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+                  Map (Routes)
+                </h1>
+                <p className="text-sm text-slate-500">
+                  Community saved routes — plan and explore
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -187,7 +236,9 @@ export default function SavedRoutesPage() {
                 className="inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-medium hover:bg-slate-50 disabled:opacity-60 transition-colors"
                 title="Refresh to see latest status (e.g. Live after approval)"
               >
-                <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`}
+                />
                 Refresh
               </button>
               <button
@@ -260,8 +311,15 @@ export default function SavedRoutesPage() {
                   {/* Status badge — Live = approved & visible to all; Pending = awaiting approval; Rejected = not published */}
                   {isOwnRoute(route) && (
                     <div className="mb-3">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${getStatusBadge(route.status).className}`}>
-                        {getStatusBadge(route.status).showDot && <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" aria-hidden />}
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${getStatusBadge(route.status).className}`}
+                      >
+                        {getStatusBadge(route.status).showDot && (
+                          <span
+                            className="w-1.5 h-1.5 rounded-full bg-current shrink-0"
+                            aria-hidden
+                          />
+                        )}
                         {getStatusBadge(route.status).label}
                       </span>
                     </div>
@@ -272,7 +330,10 @@ export default function SavedRoutesPage() {
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs font-bold shrink-0 mt-0.5">
                         A
                       </span>
-                      <p className="text-sm text-slate-700 line-clamp-2" title={route.startLocation}>
+                      <p
+                        className="text-sm text-slate-700 line-clamp-2"
+                        title={route.startLocation}
+                      >
                         {route.startLocation}
                       </p>
                     </div>
@@ -280,7 +341,10 @@ export default function SavedRoutesPage() {
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white text-xs font-bold shrink-0 mt-0.5">
                         B
                       </span>
-                      <p className="text-sm text-slate-700 line-clamp-2" title={route.endLocation}>
+                      <p
+                        className="text-sm text-slate-700 line-clamp-2"
+                        title={route.endLocation}
+                      >
                         {route.endLocation}
                       </p>
                     </div>
@@ -327,7 +391,8 @@ export default function SavedRoutesPage() {
                         }}
                         className="text-xs text-slate-600 hover:text-primary transition-colors"
                       >
-                        {route.averageRating.toFixed(1)} ({route.ratingCount} {route.ratingCount === 1 ? 'rating' : 'ratings'})
+                        {route.averageRating.toFixed(1)} ({route.ratingCount}{" "}
+                        {route.ratingCount === 1 ? "rating" : "ratings"})
                       </button>
                     </div>
                   )}
@@ -391,7 +456,7 @@ export default function SavedRoutesPage() {
                     <button
                       type="button"
                       onClick={() => handleViewOnMap(route)}
-                      className={`${token && !isOwnRoute(route) ? 'flex-1' : 'w-full'} flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors`}
+                      className={`${token && !isOwnRoute(route) ? "flex-1" : "w-full"} flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition-colors`}
                     >
                       <ExternalLink className="w-4 h-4" />
                       View on Map
@@ -416,12 +481,17 @@ export default function SavedRoutesPage() {
                   <TriangleAlert className="w-5 h-5 text-red-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800">Delete route?</h3>
-                  <p className="text-sm text-slate-500">This action cannot be undone.</p>
+                  <h3 className="text-lg font-bold text-slate-800">
+                    Delete route?
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    This action cannot be undone.
+                  </p>
                 </div>
               </div>
               <p className="text-xs text-slate-600 mb-4 line-clamp-2">
-                {deleteConfirmRoute.startLocation} → {deleteConfirmRoute.endLocation}
+                {deleteConfirmRoute.startLocation} →{" "}
+                {deleteConfirmRoute.endLocation}
               </p>
               <div className="flex gap-2">
                 <button
@@ -430,7 +500,11 @@ export default function SavedRoutesPage() {
                   disabled={deleting}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 disabled:opacity-50 transition-colors"
                 >
-                  {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                  {deleting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
                   {deleting ? "Deleting..." : "Yes, delete"}
                 </button>
                 <button
@@ -453,7 +527,17 @@ export default function SavedRoutesPage() {
             token={token}
             onClose={() => setRatingModalRoute(null)}
             onSubmit={(updatedRoute) => {
-              setRoutes((prev) => prev.map((r) => (r._id === updatedRoute._id ? { ...r, averageRating: updatedRoute.averageRating, ratingCount: updatedRoute.ratingCount } : r)));
+              setRoutes((prev) =>
+                prev.map((r) =>
+                  r._id === updatedRoute._id
+                    ? {
+                        ...r,
+                        averageRating: updatedRoute.averageRating,
+                        ratingCount: updatedRoute.ratingCount,
+                      }
+                    : r,
+                ),
+              );
               setRatingModalRoute(null);
             }}
           />
@@ -503,7 +587,7 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
 
         // Find current user's rating
         const userRating = data.ratings.find(
-          r => String(r.userId?._id) === String(user._id)
+          (r) => String(r.userId?._id) === String(user._id),
         );
 
         if (userRating) {
@@ -533,13 +617,15 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
 
     setSubmitting(true);
     try {
-      const updatedRoute = await rateRoute(token, route._id, { rating, comment });
+      const updatedRoute = isEditMode
+        ? await updateRouteRating(token, route._id, { rating, comment })
+        : await rateRoute(token, route._id, { rating, comment });
 
       // Different success message based on mode
       toast.success(
         isEditMode
           ? "Your rating has been updated!"
-          : "Thank you for rating this route!"
+          : "Thank you for rating this route!",
       );
 
       onSubmit(updatedRoute);
@@ -561,9 +647,12 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
         ...route,
         ratingCount: route.ratingCount - 1,
         // Average recalculation happens on backend, but we can estimate
-        averageRating: route.ratingCount > 1
-          ? ((route.averageRating * route.ratingCount) - existingRating.rating) / (route.ratingCount - 1)
-          : 0
+        averageRating:
+          route.ratingCount > 1
+            ? (route.averageRating * route.ratingCount -
+                existingRating.rating) /
+              (route.ratingCount - 1)
+            : 0,
       };
 
       onSubmit(updatedRoute);
@@ -578,7 +667,10 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -604,7 +696,8 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
               </h3>
 
               <p className="text-sm text-slate-600 mb-6">
-                This will permanently remove your {existingRating.rating}-star rating
+                This will permanently remove your {existingRating.rating}-star
+                rating
                 {existingRating.comment && " and comment"}.
               </p>
 
@@ -614,7 +707,11 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
                   disabled={deleting}
                   className="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors flex items-center justify-center"
                 >
-                  {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Yes, Delete"}
+                  {deleting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Yes, Delete"
+                  )}
                 </button>
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
@@ -677,7 +774,9 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
                 ))}
               </div>
               <span className="ml-2 text-sm font-medium text-slate-600">
-                {rating === 0 ? "Select rating" : `${rating} star${rating > 1 ? 's' : ''}`}
+                {rating === 0
+                  ? "Select rating"
+                  : `${rating} star${rating > 1 ? "s" : ""}`}
               </span>
             </div>
 
@@ -694,7 +793,9 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
                 rows={4}
                 maxLength={500}
               />
-              <p className="text-xs text-slate-400 mt-1 text-right">{comment.length}/500</p>
+              <p className="text-xs text-slate-400 mt-1 text-right">
+                {comment.length}/500
+              </p>
             </div>
 
             {/* Actions */}
@@ -749,7 +850,10 @@ function RateRouteModal({ route, token, onClose, onSubmit }) {
    ───────────────────────────────────────────── */
 function ViewRatingsModal({ route, ratings, loading, onClose }) {
   return (
-    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -783,7 +887,9 @@ function ViewRatingsModal({ route, ratings, loading, onClose }) {
             <div className="bg-primary/5 rounded-xl p-4 mb-4 border border-primary/10">
               <div className="flex items-center gap-3">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">{ratings.averageRating.toFixed(1)}</div>
+                  <div className="text-3xl font-bold text-primary">
+                    {ratings.averageRating.toFixed(1)}
+                  </div>
                   <div className="flex items-center gap-0.5 mt-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
@@ -798,7 +904,9 @@ function ViewRatingsModal({ route, ratings, loading, onClose }) {
                   </div>
                 </div>
                 <div className="text-sm text-slate-600">
-                  Based on <span className="font-semibold">{ratings.ratingCount}</span> {ratings.ratingCount === 1 ? 'rating' : 'ratings'}
+                  Based on{" "}
+                  <span className="font-semibold">{ratings.ratingCount}</span>{" "}
+                  {ratings.ratingCount === 1 ? "rating" : "ratings"}
                 </div>
               </div>
             </div>
@@ -807,14 +915,19 @@ function ViewRatingsModal({ route, ratings, loading, onClose }) {
             <div className="overflow-y-auto flex-1 -mx-5 sm:-mx-6 px-5 sm:px-6">
               <div className="space-y-4">
                 {ratings.ratings.map((r, idx) => (
-                  <div key={idx} className="border-b border-slate-100 pb-4 last:border-0">
+                  <div
+                    key={idx}
+                    className="border-b border-slate-100 pb-4 last:border-0"
+                  >
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                           <User className="w-4 h-4 text-primary" />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-slate-800">{r.userId?.name || "Cyclist"}</p>
+                          <p className="text-sm font-semibold text-slate-800">
+                            {r.userId?.name || "Cyclist"}
+                          </p>
                           <div className="flex items-center gap-0.5 mt-0.5">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <Star
@@ -829,10 +942,14 @@ function ViewRatingsModal({ route, ratings, loading, onClose }) {
                           </div>
                         </div>
                       </div>
-                      <span className="text-xs text-slate-400">{formatDate(r.createdAt)}</span>
+                      <span className="text-xs text-slate-400">
+                        {formatDate(r.createdAt)}
+                      </span>
                     </div>
                     {r.comment && (
-                      <p className="text-sm text-slate-600 mt-2 pl-10">{r.comment}</p>
+                      <p className="text-sm text-slate-600 mt-2 pl-10">
+                        {r.comment}
+                      </p>
                     )}
                   </div>
                 ))}
@@ -843,7 +960,9 @@ function ViewRatingsModal({ route, ratings, loading, onClose }) {
           <div className="flex flex-col items-center justify-center py-12">
             <Star className="w-12 h-12 text-slate-300 mb-3" />
             <p className="text-slate-600 font-medium">No ratings yet</p>
-            <p className="text-sm text-slate-400 mt-1">Be the first to rate this route!</p>
+            <p className="text-sm text-slate-400 mt-1">
+              Be the first to rate this route!
+            </p>
           </div>
         )}
 
