@@ -21,7 +21,7 @@ import {
 
 const router = express.Router();
 
-// 🔒 All partner routes require authentication + partner role
+// All partner routes require authentication + partner role
 router.use(protect, partnerOnly);
 
 /**
