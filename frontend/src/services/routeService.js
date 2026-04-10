@@ -1,13 +1,3 @@
-/**
- * services/routeService.js
- * --------------------------------------------------
- * API service for saved routes (community routes).
- *
- *   saveRoute(token, payload)  → POST /api/routes
- *   getRoutes()                → GET  /api/routes
- * --------------------------------------------------
- */
-
 import { axiosClient } from "./axiosClient.js";
 
 const BASE = import.meta.env.VITE_API_URL ?? "";

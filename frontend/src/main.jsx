@@ -1,18 +1,3 @@
-/**
- * main.jsx
- * --------------------------------------------------
- * Application entry point.
- *
- * Provider hierarchy:
- *   React.StrictMode
- *   └── QueryClientProvider — TanStack React Query (data caching)
- *       └── BrowserRouter   — React Router (URL routing)
- *           └── AuthProvider — global auth state (Context API)
- *               └── App      — route definitions & pages
- *   Toaster — react-hot-toast (global toast notifications)
- * --------------------------------------------------
- */
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -34,8 +19,8 @@ const googleClientId =
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 2,   // 2 min — data considered fresh, no refetch
-      gcTime: 1000 * 60 * 10,     // 10 min — keep unused cache in memory
+      staleTime: 1000 * 60 * 2, // 2 min — data considered fresh, no refetch
+      gcTime: 1000 * 60 * 10, // 10 min — keep unused cache in memory
       refetchOnWindowFocus: false, // don't refetch when switching tabs back
       retry: 1,
     },
@@ -62,5 +47,5 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         }}
       />
     </QueryClientProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
