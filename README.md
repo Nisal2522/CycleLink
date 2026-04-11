@@ -401,9 +401,9 @@ Defined in `.github/workflows/vercel-deploy.yml` — every push to `main` trigge
 
 | Environment | URL |
 |-------------|-----|
-| Frontend (Vercel)    | https://cycle-link2.vercel.app/ |
-| Backend (Render)     | https://cyclelink.onrender.com/api |
-| Swagger UI           | `https://cyclelink.onrender.com/api/api-docs` |
+| Frontend (Vercel)    | https://cycle-link-eta.vercel.app/|
+| Backend (Render)     | https://cyclelink-1.onrender.com |
+| Swagger UI           | `https://cyclelink-1.onrender.com/api/api-docs` |
 
 ### Screenshots
 
