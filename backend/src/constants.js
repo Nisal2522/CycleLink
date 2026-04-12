@@ -6,7 +6,13 @@ export const ROUTE_STATUS = {
   REJECTED: "rejected",
 };
 
-export const HAZARD_TYPES = ["pothole", "construction", "accident", "flooding", "other"];
+export const HAZARD_TYPES = [
+  "pothole",
+  "construction",
+  "accident",
+  "flooding",
+  "other",
+];
 
 export const LIMITS = {
   ROUTES_ADMIN: 500,
@@ -20,7 +26,20 @@ export const LIMITS = {
   SEARCH_USERS_MAX: 50,
 };
 
-export const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+export const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 /** Cyclist stats: kg CO₂ saved per km; tokens earned per km */
 export const CO2_PER_KM = 0.21;

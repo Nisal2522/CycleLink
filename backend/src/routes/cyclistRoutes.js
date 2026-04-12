@@ -15,14 +15,15 @@ import {
   endRide,
   getActiveRide,
   cancelRide,
-  pauseRide,
-  resumeRide,
 } from "../controllers/cyclistController.js";
-import { startRideSchema, endRideSchema } from "../validatons/rideValidation.js";
+import {
+  startRideSchema,
+  endRideSchema,
+} from "../validatons/rideValidation.js";
 
 const router = express.Router();
 
-// 🌐 Public routes (no auth required)
+// Public routes (no auth required)
 
 /**
  * @swagger
@@ -48,7 +49,7 @@ const router = express.Router();
  *                           type: integer
  *                           example: 24
  */
-router.get("/partner-count",        asyncHandler(getPartnerCount));
+router.get("/partner-count", asyncHandler(getPartnerCount));
 
 /**
  * @swagger
@@ -72,7 +73,7 @@ router.get("/partner-count",        asyncHandler(getPartnerCount));
  *                       items:
  *                         $ref: '#/components/schemas/User'
  */
-router.get("/partners",             asyncHandler(getPartnerShops));
+router.get("/partners", asyncHandler(getPartnerShops));
 
 /**
  * @swagger
@@ -142,9 +143,9 @@ router.get("/partners/:id/rewards", asyncHandler(getShopRewards));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/leaderboard",          protect, asyncHandler(getLeaderboard)); // Protected but any role
+router.get("/leaderboard", protect, asyncHandler(getLeaderboard)); // Protected but any role
 
-// 🔒 Cyclist-only routes (authentication + cyclist role required)
+// Cyclist-only routes (authentication + cyclist role required)
 router.use(protect, cyclistOnly);
 
 /**
@@ -190,7 +191,7 @@ router.use(protect, cyclistOnly);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/rides",                asyncHandler(getRides));
+router.get("/rides", asyncHandler(getRides));
 
 /**
  * @swagger
@@ -228,7 +229,7 @@ router.get("/rides",                asyncHandler(getRides));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/rides/active",         asyncHandler(getActiveRide));
+router.get("/rides/active", asyncHandler(getActiveRide));
 
 /**
  * @swagger
@@ -285,7 +286,7 @@ router.get("/rides/active",         asyncHandler(getActiveRide));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/rides/start",         validate(startRideSchema), asyncHandler(startRide));
+router.post("/rides/start", validate(startRideSchema), asyncHandler(startRide));
 
 /**
  * @swagger
@@ -361,7 +362,7 @@ router.post("/rides/start",         validate(startRideSchema), asyncHandler(star
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/rides/:id/end",       validate(endRideSchema), asyncHandler(endRide));
+router.post("/rides/:id/end", validate(endRideSchema), asyncHandler(endRide));
 
 /**
  * @swagger
@@ -410,59 +411,7 @@ router.post("/rides/:id/end",       validate(endRideSchema), asyncHandler(endRid
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/rides/:id/cancel",    asyncHandler(cancelRide));
-
-/**
- * @swagger
- * /cyclist/rides/{id}/pause:
- *   post:
- *     summary: Pause an active ride
- *     description: Pause the current ride so distance stops accumulating until resumed.
- *     tags: [Cyclist]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: Ride ID
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Ride paused
- *       400:
- *         description: Ride already paused or cannot be paused
- *       401/403/404:
- *         description: Auth or not found
- */
-router.post("/rides/:id/pause",     asyncHandler(pauseRide));
-
-/**
- * @swagger
- * /cyclist/rides/{id}/resume:
- *   post:
- *     summary: Resume a paused ride
- *     description: Resume the ride so distance tracking continues.
- *     tags: [Cyclist]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: Ride ID
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Ride resumed
- *       400:
- *         description: Ride already active or cannot be resumed
- *       401/403/404:
- *         description: Auth or not found
- */
-router.post("/rides/:id/resume",    asyncHandler(resumeRide));
+router.post("/rides/:id/cancel", asyncHandler(cancelRide));
 
 /**
  * @swagger
@@ -511,7 +460,7 @@ router.post("/rides/:id/resume",    asyncHandler(resumeRide));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get("/stats",                asyncHandler(getStats));
+router.get("/stats", asyncHandler(getStats));
 
 /**
  * @swagger
@@ -560,6 +509,6 @@ router.get("/stats",                asyncHandler(getStats));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/update-distance",     asyncHandler(updateDistance));
+router.post("/update-distance", asyncHandler(updateDistance));
 
 export default router;

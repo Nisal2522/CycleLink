@@ -28,11 +28,13 @@ const hazardSchema = new mongoose.Schema(
     },
 
     // Community verifications
-    verifications: [{
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      status: { type: String, enum: ["exists", "resolved", "spam"] },
-      timestamp: { type: Date, default: Date.now },
-    }],
+    verifications: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        status: { type: String, enum: ["exists", "resolved", "spam"] },
+        timestamp: { type: Date, default: Date.now },
+      },
+    ],
 
     // Verification counts for quick access
     existsCount: { type: Number, default: 0 },
@@ -50,7 +52,7 @@ const hazardSchema = new mongoose.Schema(
     moderatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     moderationNote: { type: String, trim: true, maxlength: 200 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 hazardSchema.index({ lat: 1, lng: 1 });

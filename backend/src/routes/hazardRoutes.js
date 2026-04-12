@@ -3,7 +3,11 @@ import asyncHandler from "express-async-handler";
 import { protect } from "../middleware/authMiddleware.js";
 import { roleCheck } from "../middleware/role.js";
 import { validate } from "../middleware/validate.js";
-import { reportHazardSchema, updateHazardSchema, verifyHazardSchema } from "../validatons/hazardValidation.js";
+import {
+  reportHazardSchema,
+  updateHazardSchema,
+  verifyHazardSchema,
+} from "../validatons/hazardValidation.js";
 import {
   getHazards,
   getHazardMarkers,
@@ -128,7 +132,12 @@ router.get("/markers", asyncHandler(getHazardMarkers));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/report", protect, validate(reportHazardSchema), asyncHandler(reportHazard));
+router.post(
+  "/report",
+  protect,
+  validate(reportHazardSchema),
+  asyncHandler(reportHazard),
+);
 
 /**
  * @swagger
@@ -186,7 +195,12 @@ router.post("/report", protect, validate(reportHazardSchema), asyncHandler(repor
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.patch("/:id", protect, validate(updateHazardSchema), asyncHandler(updateHazard));
+router.patch(
+  "/:id",
+  protect,
+  validate(updateHazardSchema),
+  asyncHandler(updateHazard),
+);
 
 /**
  * @swagger
@@ -279,7 +293,12 @@ router.delete("/:id", protect, asyncHandler(deleteHazard));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/:id/verify", protect, validate(verifyHazardSchema), asyncHandler(verifyHazard));
+router.post(
+  "/:id/verify",
+  protect,
+  validate(verifyHazardSchema),
+  asyncHandler(verifyHazard),
+);
 
 /**
  * @swagger
@@ -386,7 +405,12 @@ router.get("/:id/verifications", asyncHandler(getHazardVerifications));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.patch("/:id/moderate", protect, roleCheck(["admin"]), asyncHandler(moderateHazard));
+router.patch(
+  "/:id/moderate",
+  protect,
+  roleCheck(["admin"]),
+  asyncHandler(moderateHazard),
+);
 
 /**
  * @swagger
@@ -425,7 +449,12 @@ router.patch("/:id/moderate", protect, roleCheck(["admin"]), asyncHandler(modera
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.delete("/:id/force", protect, roleCheck(["admin"]), asyncHandler(forceDeleteHazard));
+router.delete(
+  "/:id/force",
+  protect,
+  roleCheck(["admin"]),
+  asyncHandler(forceDeleteHazard),
+);
 
 /**
  * @swagger
@@ -466,6 +495,11 @@ router.delete("/:id/force", protect, roleCheck(["admin"]), asyncHandler(forceDel
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post("/cleanup", protect, roleCheck(["admin"]), asyncHandler(cleanupStaleHazards));
+router.post(
+  "/cleanup",
+  protect,
+  roleCheck(["admin"]),
+  asyncHandler(cleanupStaleHazards),
+);
 
 export default router;

@@ -7,12 +7,13 @@ import { LIMITS, MONTH_NAMES, USER_GROWTH_PERIODS } from "../constants.js";
 const userCollection = User.collection.name;
 
 export async function getStats() {
-  const [totalUsers, totalPartners, totalRoutes, totalHazards] = await Promise.all([
-    User.countDocuments({ role: "cyclist" }),
-    User.countDocuments({ role: "partner" }),
-    Route.countDocuments(),
-    Hazard.countDocuments(),
-  ]);
+  const [totalUsers, totalPartners, totalRoutes, totalHazards] =
+    await Promise.all([
+      User.countDocuments({ role: "cyclist" }),
+      User.countDocuments({ role: "partner" }),
+      Route.countDocuments(),
+      Hazard.countDocuments(),
+    ]);
   const totalAdmins = await User.countDocuments({ role: "admin" });
   return {
     totalUsers: totalUsers + totalPartners + totalAdmins,
@@ -24,7 +25,10 @@ export async function getStats() {
 }
 
 export async function getUsers() {
-  const users = await User.find().select("-password").sort({ createdAt: -1 }).lean();
+  const users = await User.find()
+    .select("-password")
+    .sort({ createdAt: -1 })
+    .lean();
   return users.map((u) => ({
     _id: u._id,
     name: u.name,
@@ -33,7 +37,11 @@ export async function getUsers() {
     shopName: u.shopName || null,
     isVerified: u.isVerified ?? false,
     isBlocked: u.isBlocked ?? false,
-    status: u.isBlocked ? "Blocked" : (u.role === "partner" && !u.isVerified ? "Pending" : "Active"),
+    status: u.isBlocked
+      ? "Blocked"
+      : u.role === "partner" && !u.isVerified
+        ? "Pending"
+        : "Active",
     partnerTotalRedemptions: u.partnerTotalRedemptions ?? 0,
     createdAt: u.createdAt,
   }));
@@ -65,7 +73,11 @@ export async function blockUser(userId, block) {
   }
   user.isBlocked = block !== false;
   await user.save();
-  return { _id: user._id, isBlocked: user.isBlocked, message: user.isBlocked ? "User blocked" : "User unblocked" };
+  return {
+    _id: user._id,
+    isBlocked: user.isBlocked,
+    message: user.isBlocked ? "User blocked" : "User unblocked",
+  };
 }
 
 export async function deleteUser(userId) {
@@ -92,10 +104,18 @@ export async function getUserGrowthStats(period = "thisYear") {
   let periodKeys = [];
   if (p === USER_GROWTH_PERIODS.THIS_MONTH) {
     start = new Date(now.getFullYear(), now.getMonth(), 1);
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const daysInMonth = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+    ).getDate();
     for (let d = 1; d <= daysInMonth; d++) {
       periodKeys.push(
-        now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(d).padStart(2, "0")
+        now.getFullYear() +
+          "-" +
+          String(now.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(d).padStart(2, "0"),
       );
       labels.push("Day " + d);
     }
@@ -109,7 +129,12 @@ export async function getUserGrowthStats(period = "thisYear") {
   const end = new Date(now);
   end.setHours(23, 59, 59, 999);
   const agg = await User.aggregate([
-    { $match: { createdAt: { $gte: start, $lte: end }, role: { $in: ["cyclist", "partner"] } } },
+    {
+      $match: {
+        createdAt: { $gte: start, $lte: end },
+        role: { $in: ["cyclist", "partner"] },
+      },
+    },
     {
       $group: {
         _id: {
@@ -126,12 +151,17 @@ export async function getUserGrowthStats(period = "thisYear") {
   const countByPeriodAndRole = {};
   agg.forEach((row) => {
     const key = row._id.period;
-    if (!countByPeriodAndRole[key]) countByPeriodAndRole[key] = { cyclist: 0, partner: 0 };
-    if (row._id.role === "cyclist") countByPeriodAndRole[key].cyclist = row.count;
-    if (row._id.role === "partner") countByPeriodAndRole[key].partner = row.count;
+    if (!countByPeriodAndRole[key])
+      countByPeriodAndRole[key] = { cyclist: 0, partner: 0 };
+    if (row._id.role === "cyclist")
+      countByPeriodAndRole[key].cyclist = row.count;
+    if (row._id.role === "partner")
+      countByPeriodAndRole[key].partner = row.count;
   });
   const userData = periodKeys.map((k) => countByPeriodAndRole[k]?.cyclist ?? 0);
-  const partnerData = periodKeys.map((k) => countByPeriodAndRole[k]?.partner ?? 0);
+  const partnerData = periodKeys.map(
+    (k) => countByPeriodAndRole[k]?.partner ?? 0,
+  );
   return { labels, userData, partnerData };
 }
 
@@ -145,19 +175,37 @@ export async function getRoutes() {
           $cond: {
             if: { $eq: [{ $type: "$creatorId" }, "objectId"] },
             then: "$creatorId",
-            else: { $convert: { input: "$creatorId", to: "objectId", onError: null, onNull: null } },
+            else: {
+              $convert: {
+                input: "$creatorId",
+                to: "objectId",
+                onError: null,
+                onNull: null,
+              },
+            },
           },
         },
       },
     },
-    { $lookup: { from: userCollection, localField: "_creatorIdLookup", foreignField: "_id", as: "creatorDoc" } },
+    {
+      $lookup: {
+        from: userCollection,
+        localField: "_creatorIdLookup",
+        foreignField: "_id",
+        as: "creatorDoc",
+      },
+    },
     { $addFields: { _firstCreator: { $arrayElemAt: ["$creatorDoc", 0] } } },
     {
       $addFields: {
         creatorId: {
           $cond: {
             if: { $gt: [{ $size: "$creatorDoc" }, 0] },
-            then: { _id: "$_firstCreator._id", name: "$_firstCreator.name", email: "$_firstCreator.email" },
+            then: {
+              _id: "$_firstCreator._id",
+              name: "$_firstCreator.name",
+              email: "$_firstCreator.email",
+            },
             else: { _id: "$_creatorIdLookup" },
           },
         },
@@ -185,7 +233,9 @@ export async function getPendingRoutes() {
 }
 
 export async function getRouteIssues() {
-  const routes = await Route.find({ $or: [{ status: "approved" }, { status: { $exists: false } }] })
+  const routes = await Route.find({
+    $or: [{ status: "approved" }, { status: { $exists: false } }],
+  })
     .lean()
     .limit(LIMITS.ROUTES_ADMIN);
   const issuesByRoute = {};
@@ -215,7 +265,11 @@ export async function deleteRoute(routeId) {
 }
 
 export async function approveRoute(routeId) {
-  const route = await Route.findByIdAndUpdate(routeId, { status: "approved" }, { new: true, runValidators: true });
+  const route = await Route.findByIdAndUpdate(
+    routeId,
+    { status: "approved" },
+    { new: true, runValidators: true },
+  );
   if (!route) {
     const err = new Error("Route not found");
     err.statusCode = 404;
@@ -225,7 +279,11 @@ export async function approveRoute(routeId) {
 }
 
 export async function rejectRoute(routeId) {
-  const route = await Route.findByIdAndUpdate(routeId, { status: "rejected" }, { new: true, runValidators: true });
+  const route = await Route.findByIdAndUpdate(
+    routeId,
+    { status: "rejected" },
+    { new: true, runValidators: true },
+  );
   if (!route) {
     const err = new Error("Route not found");
     err.statusCode = 404;
@@ -249,20 +307,32 @@ export async function getAdminHazards() {
     description: h.description != null ? String(h.description) : "",
     reportedBy:
       h.reportedBy && typeof h.reportedBy === "object"
-        ? { _id: h.reportedBy._id, name: h.reportedBy.name ?? null, email: h.reportedBy.email ?? null }
+        ? {
+            _id: h.reportedBy._id,
+            name: h.reportedBy.name ?? null,
+            email: h.reportedBy.email ?? null,
+          }
         : null,
     createdAt: h.createdAt,
   }));
 }
 
 export async function resolveAdminHazard(hazardId) {
-  const hazard = await Hazard.findByIdAndUpdate(hazardId, { active: false }, { new: true, runValidators: true });
+  const hazard = await Hazard.findByIdAndUpdate(
+    hazardId,
+    { active: false },
+    { new: true, runValidators: true },
+  );
   if (!hazard) {
     const err = new Error("Hazard not found");
     err.statusCode = 404;
     throw err;
   }
-  return { _id: hazard._id, active: false, message: "Hazard marked as resolved" };
+  return {
+    _id: hazard._id,
+    active: false,
+    message: "Hazard marked as resolved",
+  };
 }
 
 export async function deleteAdminHazard(hazardId) {

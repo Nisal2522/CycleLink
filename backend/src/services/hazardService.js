@@ -12,7 +12,9 @@ export async function getHazards() {
 
 export async function getHazardMarkers() {
   return Hazard.find({ active: true })
-    .select("lat lng type description reportedBy status verifications existsCount resolvedCount spamCount")
+    .select(
+      "lat lng type description reportedBy status verifications existsCount resolvedCount spamCount",
+    )
     .populate("reportedBy", "name")
     .sort({ createdAt: -1 })
     .lean()
@@ -21,8 +23,11 @@ export async function getHazardMarkers() {
 
 export async function reportHazard(userId, body) {
   const { lat, lng } = body;
-  const type = (body.type ?? body.category ?? "other").toString().trim() || "other";
-  const description = (body.description != null ? String(body.description) : "").trim();
+  const type =
+    (body.type ?? body.category ?? "other").toString().trim() || "other";
+  const description = (
+    body.description != null ? String(body.description) : ""
+  ).trim();
   const safeType = HAZARD_TYPES.includes(type) ? type : "other";
   const hazard = await Hazard.create({
     lat: Number(lat),
@@ -88,7 +93,7 @@ export async function verifyHazard(hazardId, userId, verificationStatus) {
 
   // Check if user already verified this hazard
   const existingVerification = hazard.verifications.find(
-    v => v.userId.toString() === userId.toString()
+    (v) => v.userId.toString() === userId.toString(),
   );
 
   if (existingVerification) {
@@ -105,9 +110,15 @@ export async function verifyHazard(hazardId, userId, verificationStatus) {
   }
 
   // Update counts
-  hazard.existsCount = hazard.verifications.filter(v => v.status === "exists").length;
-  hazard.resolvedCount = hazard.verifications.filter(v => v.status === "resolved").length;
-  hazard.spamCount = hazard.verifications.filter(v => v.status === "spam").length;
+  hazard.existsCount = hazard.verifications.filter(
+    (v) => v.status === "exists",
+  ).length;
+  hazard.resolvedCount = hazard.verifications.filter(
+    (v) => v.status === "resolved",
+  ).length;
+  hazard.spamCount = hazard.verifications.filter(
+    (v) => v.status === "spam",
+  ).length;
 
   // Auto-update status based on threshold
   if (hazard.resolvedCount >= 3 && hazard.status !== "resolved") {
@@ -116,7 +127,7 @@ export async function verifyHazard(hazardId, userId, verificationStatus) {
     hazard.resolvedBy = userId;
   } else if (hazard.spamCount >= 3 && hazard.status !== "invalid") {
     hazard.status = "invalid";
-    hazard.active = false;  // Hide from map
+    hazard.active = false; // Hide from map
   } else if (hazard.existsCount >= 2 && hazard.status === "reported") {
     hazard.status = "verified";
   }
@@ -188,12 +199,12 @@ export async function cleanupStaleHazards() {
   // Mark as expired but don't delete
   for (const hazard of staleHazards) {
     hazard.expiresAt = new Date();
-    hazard.active = false;  // Hide from map
+    hazard.active = false; // Hide from map
     await hazard.save();
   }
 
   return {
     message: `Marked ${staleHazards.length} stale hazard(s) as expired`,
-    count: staleHazards.length
+    count: staleHazards.length,
   };
 }

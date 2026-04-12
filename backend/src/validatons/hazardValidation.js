@@ -4,13 +4,19 @@ import { HAZARD_TYPES } from "../constants.js";
 export const reportHazardSchema = Joi.object({
   lat: Joi.number().min(-90).max(90).required(),
   lng: Joi.number().min(-180).max(180).required(),
-  type: Joi.string().valid(...HAZARD_TYPES).optional(),
-  category: Joi.string().valid(...HAZARD_TYPES).optional(),
+  type: Joi.string()
+    .valid(...HAZARD_TYPES)
+    .optional(),
+  category: Joi.string()
+    .valid(...HAZARD_TYPES)
+    .optional(),
   description: Joi.string().trim().max(200).allow("").optional(),
 });
 
 export const updateHazardSchema = Joi.object({
-  type: Joi.string().valid(...HAZARD_TYPES).optional(),
+  type: Joi.string()
+    .valid(...HAZARD_TYPES)
+    .optional(),
   description: Joi.string().trim().max(200).allow("").optional(),
 }).min(1);
 

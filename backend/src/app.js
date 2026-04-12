@@ -23,8 +23,12 @@ import { getCheckouts } from "./controllers/partnerController.js";
 
 const allowedOrigins = [
   "http://localhost:5173",
-  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim()) : []),
-  ...(process.env.FRONTEND_ORIGIN && !process.env.CORS_ORIGIN ? [process.env.FRONTEND_ORIGIN] : []),
+  ...(process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",").map((o) => o.trim())
+    : []),
+  ...(process.env.FRONTEND_ORIGIN && !process.env.CORS_ORIGIN
+    ? [process.env.FRONTEND_ORIGIN]
+    : []),
 ].filter(Boolean);
 
 const app = express();
@@ -36,9 +40,13 @@ app.use(
       else cb(null, false);
     },
     credentials: true,
-  })
+  }),
 );
-app.use("/api/payments/payhere/notify", express.urlencoded({ extended: true }), asyncHandler(payhereNotify));
+app.use(
+  "/api/payments/payhere/notify",
+  express.urlencoded({ extended: true }),
+  asyncHandler(payhereNotify),
+);
 app.use(express.json({ limit: "10mb" }));
 
 /* ── Swagger UI ── */
@@ -64,7 +72,10 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/api/admin-check", (req, res) => {
-  res.json({ adminRoutesMounted: true, message: "Restart backend if admin panel still 404s" });
+  res.json({
+    adminRoutesMounted: true,
+    message: "Restart backend if admin panel still 404s",
+  });
 });
 
 app.use(notFound);
