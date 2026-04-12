@@ -31,3 +31,4 @@ frontend/docs/
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+*.txt

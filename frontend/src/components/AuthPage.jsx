@@ -599,7 +599,7 @@ export default function AuthPage({
                       {[
                         { value: "cyclist", label: "Cyclist", icon: Bike },
                         { value: "partner", label: "Partner", icon: Store },
-                        { value: "admin", label: "Admin", icon: ShieldCheck },
+                        // { value: "admin", label: "Admin", icon: ShieldCheck },
                       ].map((opt) => (
                         <button
                           key={opt.value}
