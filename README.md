@@ -1,4 +1,4 @@
-# CycleLink — Full-Stack Cycling Rewards & Community Platform
+# CycleLink - Full-Stack Cycling Rewards & Community Platform
 
 CycleLink is a full-stack web application for cyclists. Riders track rides and earn tokens, redeem them at partner shops, discover and rate routes, report road hazards, chat in real time, and get help from an AI cycling assistant. Partners manage rewards and payouts; admins moderate content and approve payments.
 
