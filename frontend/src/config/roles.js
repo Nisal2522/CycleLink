@@ -28,7 +28,7 @@ export const ROLE_DASHBOARDS = {
 export const ROLE_LABELS = {
   cyclist: "Cyclist",
   partner: "Partner",
-  admin: "Admin",
+  // admin: "Admin",
 };
 
 /**
